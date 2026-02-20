@@ -96,7 +96,6 @@ git clone https://github.com/sthakur369/VeriLog.git
 cd verilog
 
 # 2. Build and start all containers
-cd docker
 docker compose up -d --build
 ```
 

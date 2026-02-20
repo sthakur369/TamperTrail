@@ -92,7 +92,7 @@ Isolate logs by project (tenant) with **two layers of enforcement**: application
 
 ```bash
 # 1. Clone the repository
-git clone https://github.com/your-org/verilog.git
+git clone https://github.com/sthakur369/VeriLog.git
 cd verilog
 
 # 2. Build and start all containers

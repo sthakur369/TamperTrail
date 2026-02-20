@@ -374,7 +374,7 @@ VeriLog is **Self-Hosted Proprietary Software**.
 * **Free Features:** Free for individuals and small teams. Includes full access to the core vault, cryptographic chaining, and ingestion API.
 * **Pro Features:** Requires a valid license key to unlock higher limits for tenants, users, and extended retention policies.
 
-By downloading and using this software, you agree to the terms outlined in the [LICENSE.md](LICENSE.md) file. 
+By downloading and using this software, you agree to the terms outlined in the [LICENSE](LICENSE) file. 
 
 **Copyright © 2026 VeriLog. All rights reserved.**
 

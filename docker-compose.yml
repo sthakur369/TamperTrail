@@ -1,0 +1,66 @@
+version: "3.9"
+
+services:
+  # ── Init: generate unique secrets on first boot ─────────────
+  init:
+    image: alpine:3.19
+    container_name: verilog-init
+    volumes:
+      - secrets:/secrets
+      - ./init/generate-secrets.sh:/run.sh:ro
+    entrypoint: ["sh", "/run.sh"]
+    restart: "no"
+
+  # ── PostgreSQL 16 ───────────────────────────────────────────
+  postgres:
+    image: postgres:16-alpine
+    container_name: verilog-db
+    restart: unless-stopped
+    depends_on:
+      init:
+        condition: service_completed_successfully
+    environment:
+      POSTGRES_DB: verilog
+      POSTGRES_USER: verilog
+      POSTGRES_PASSWORD_FILE: /secrets/db_password
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - secrets:/secrets:ro
+      - ./postgres/init.sql:/docker-entrypoint-initdb.d/01-init.sql
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U verilog"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  # ── FastAPI Backend ─────────────────────────────────────────
+  server:
+    image: sthakur369/verilog-server:${VERILOG_VERSION:-0.1.0}
+    container_name: verilog-server
+    restart: unless-stopped
+    depends_on:
+      postgres:
+        condition: service_healthy
+    environment:
+      VERILOG_DB_PASSWORD_FILE: /secrets/db_password
+    volumes:
+      - server_data:/app/data
+      - secrets:/secrets:ro
+
+  # ── React Frontend (Nginx) ─────────────────────────────────
+  client:
+    image: sthakur369/verilog-client:${VERILOG_VERSION:-0.1.0}
+    container_name: verilog-client
+    restart: unless-stopped
+    depends_on:
+      - server
+    ports:
+      - "80:80"
+
+volumes:
+  postgres_data:
+    driver: local
+  server_data:
+    driver: local
+  secrets:
+    driver: local

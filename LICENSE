@@ -1,0 +1,97 @@
+PROPRIETARY SOFTWARE LICENSE
+NO AI TRAINING — NO PUBLIC DISTRIBUTION — ALL RIGHTS RESERVED
+
+Copyright (c) 2026 Shubham Thakur.
+All rights reserved.
+
+IMPORTANT: This repository contains proprietary and confidential software.
+Access is granted only to individuals or entities explicitly authorized by
+Shubham Thakur. Unauthorized use is strictly prohibited.
+
+1. Ownership
+
+The software, source code, documentation, architecture, configurations,
+metadata, commit history, and all related materials contained in this
+repository (collectively, the "Software") are the exclusive property of
+Shubham Thakur.
+
+No ownership rights are transferred under this License. All rights not
+expressly granted are reserved.
+
+2. Limited License Grant
+
+Subject to strict compliance with this License, authorized users are granted
+a limited, non-exclusive, non-transferable, non-sublicensable license to use
+the Software solely for internal development, testing, and evaluation within
+a private environment.
+
+No other rights are granted.
+
+3. Prohibited Uses
+
+Without prior written permission from Shubham Thakur, the following are
+strictly prohibited:
+
+(a) Copying, modifying, distributing, sublicensing, selling, leasing,
+    publishing, or making the Software publicly available.
+
+(b) Uploading the Software, in whole or in part, to any public repository,
+    public container registry, public code hosting service, or public
+    file-sharing platform.
+
+(c) Reverse engineering, extracting, or attempting to derive trade secrets
+    from the Software.
+
+(d) Using the Software in violation of any applicable law.
+
+4. Prohibition on AI / Machine Learning Use
+
+The Software, including but not limited to source code, compiled code,
+documentation, commit history, metadata, logs, diffs, comments, test data,
+or any derived works, may NOT be used for:
+
+• Training, pretraining, fine-tuning, evaluating, benchmarking, or improving
+  any machine learning or artificial intelligence models;
+• Inclusion in any dataset used for AI/ML systems;
+• Providing input, prompts, completions, embeddings, or signals to AI systems;
+• Any automated scraping, indexing, or data aggregation for AI purposes.
+
+The Software may not be provided to any third party, platform, service,
+or organization that uses data to train or improve AI/ML models.
+
+5. Confidentiality
+
+The Software shall be treated as confidential information. Authorized users
+must implement reasonable safeguards to prevent unauthorized access,
+disclosure, or distribution.
+
+6. Contributors and Third Parties
+
+Any individual contributing to or accessing the Software must be bound by
+a written agreement (such as a Contributor License Agreement or NDA)
+ensuring that all intellectual property rights remain with Shubham Thakur
+and that such parties comply with this License.
+
+7. Termination
+
+This License terminates automatically upon any violation of its terms.
+Upon termination, the user must immediately cease use of the Software
+and destroy all copies in their possession.
+
+8. Remedies
+
+Unauthorized use constitutes a material breach and may result in legal
+action. Shubham Thakur reserves the right to seek injunctive relief,
+damages, and any other remedies available under applicable law.
+
+9. Governing Law
+
+This License shall be governed by the laws of India.
+Any disputes shall be subject to the exclusive jurisdiction of the courts
+located in [Your City], India.
+
+10. Disclaimer of Warranty
+
+The Software is provided "AS IS", without warranty of any kind,
+express or implied, including but not limited to merchantability,
+fitness for a particular purpose, and non-infringement.

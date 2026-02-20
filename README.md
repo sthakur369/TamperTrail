@@ -20,7 +20,7 @@
 
 <div align="center">
   <img
-    src="docs/screenshots/dashboard.png"
+    src="docs/screenshots/dashboard.jpg"
     alt="VeriLog Dashboard — tamper-proof audit trail"
     width="100%"
     style="border-radius: 12px; border: 1px solid #1e293b; box-shadow: 0 8px 32px rgba(0,0,0,0.5);"

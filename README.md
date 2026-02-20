@@ -11,7 +11,7 @@
 [![React](https://img.shields.io/badge/React-19-61DAFB?logo=react&logoColor=black)](https://react.dev/)
 [![PostgreSQL](https://img.shields.io/badge/PostgreSQL-16-4169E1?logo=postgresql&logoColor=white)](https://www.postgresql.org/)
 [![Python](https://img.shields.io/badge/Python-3.12-3776AB?logo=python&logoColor=white)](https://www.python.org/)
-[![License](https://img.shields.io/badge/License-MIT-green)](LICENSE)
+[![License: Proprietary](https://img.shields.io/badge/License-Proprietary--Software-blue)](LICENSE.md)
 [![Feedback](https://img.shields.io/badge/💬_Feedback_%26_Bugs-tally.so-8b5cf6?style=flat)](https://tally.so/r/D4NvRl)
 
 </div>
@@ -504,11 +504,16 @@ For a full cryptographic breakdown, shared responsibility model, and infrastruct
 
 ---
 
-## License
+## ⚖️ License
 
-This project is Proprietary Software — All rights reserved. 
-See [LICENSE](LICENSE) for details.
+VeriLog is **Self-Hosted Proprietary Software**.
 
+* **Standard Features:** Free for individuals and small teams. Includes full access to the core vault, cryptographic chaining, and ingestion API.
+* **Pro Features:** Requires a valid license key to unlock higher limits for tenants, users, and extended retention policies.
+
+By downloading and using this software, you agree to the terms outlined in the [LICENSE.md](LICENSE.md) file. 
+
+**Copyright © 2026 VeriLog. All rights reserved.**
 
 ---
 

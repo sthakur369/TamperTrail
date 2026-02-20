@@ -34,7 +34,7 @@
 
 ---
 
-# VeriLog — Enterprise Audit Vault (Client + Docs)
+# VeriLog — Enterprise Audit Vault (Client + Server + Docs)
 
 **Free core product. Pro tier with additional features coming soon.**
 

@@ -104,6 +104,8 @@ set VERILOG_API_KEY=vl_a1b2c3d4e5f6...
 
 ### Step 2: Send a Log
 
+> For full API details, see [API_REFERENCE.md](https://github.com/sthakur369/VeriLog/blob/main/docs/API_REFERENCE.md) file in the repo.
+
 **cURL:**
 
 ```bash
@@ -171,7 +173,7 @@ log_event(
 ```
 
 
- For full API details and examples, see `docs/API_REFERENCE.md` in the repo.
+> For full API details, see [API_REFERENCE.md](https://github.com/sthakur369/VeriLog/blob/main/docs/API_REFERENCE.md) file in the repo.
 
 ---
 

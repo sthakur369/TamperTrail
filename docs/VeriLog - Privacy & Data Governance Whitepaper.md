@@ -447,4 +447,4 @@ Real-time forwarding of critical-severity events and chain verification failures
 
 ---
 
-*VeriLog is open source software provided under the MIT License. This document describes the data governance architecture of VeriLog as of the version current at the document date. For the latest information, consult the project repository.*
+*This document describes the data governance architecture of VeriLog as of the version current at the document date. For the latest information, consult the project repository.*

@@ -441,4 +441,4 @@ A compromised API key enables **log injection** (writing false entries). It does
 
 ---
 
-*VeriLog is open source software provided under the MIT License. This whitepaper describes the security architecture of VeriLog as of the version current at the document date. For the latest security information, consult the project repository.*
+*This whitepaper describes the security architecture of VeriLog as of the version current at the document date. For the latest security information, consult the project repository.*

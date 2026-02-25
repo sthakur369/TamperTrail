@@ -45,3 +45,4 @@ license_private.pem
 ehthumbs.db
 Thumbs.db
 node_modules
+docker-compose.github.yml

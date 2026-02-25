@@ -260,10 +260,10 @@ For those companies, the choice between a third-party SaaS that hosts your audit
 
 ---
 
-*VeriLog is open source software provided under the MIT License. This document describes the capabilities of VeriLog as of the version current at the document date. All roadmap items represent our current intentions and are subject to change. For the latest technical documentation, see the project repository.*
+*This document describes the capabilities of VeriLog as of the version current at the document date. All roadmap items represent our current intentions and are subject to change. For the latest technical documentation, see the project repository.*
 
 ---
 
 **Ready to evaluate VeriLog?**  
 Start with a single `docker compose up` and have a running compliance vault in under an hour.  
-Full technical documentation: [CTO & Security Architecture Guide](CTO_ARCHITECTURE.md) | [API Reference](API_REFERENCE.md) | [Data Governance Manual](DATA_GOVERNANCE_CDO.md)
+Full technical documentation: [Architecture Whitepaper](VeriLog%20-%20CTO%20Architecture%20Whitepaper.md) | [API Reference](API_REFERENCE.md) | [Data Governance](VeriLog%20-%20Privacy%20%26%20Data%20Governance%20Whitepaper.md)

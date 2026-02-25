@@ -4,7 +4,7 @@
 
 ### Self-Hosted Logging & Audit Infrastructure
 
-*No third parties. No data exposure. No SaaS control*
+_No third parties. No data exposure. No SaaS control._
 
 [![Docker](https://img.shields.io/badge/Docker-Compose-2496ED?logo=docker&logoColor=white)](https://www.docker.com/)
 [![FastAPI](https://img.shields.io/badge/FastAPI-0.115-009688?logo=fastapi&logoColor=white)](https://fastapi.tiangolo.com/)

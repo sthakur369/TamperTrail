@@ -6,7 +6,6 @@ __pycache__/
 venv/
 .venv/
 myenv/
-.env
 .pytest_cache/
 .mypy_cache/
 .ruff_cache/

@@ -58,6 +58,7 @@ cd verilog
 # 2. Build and start all containers
 docker compose up -d --build
 ```
+ > Note: By default, images are pulled from Docker Hub. If you prefer to use GitHub Container Registry (GHCR), edit the .env file in the project root: `IMAGE_REGISTRY=ghcr.io` and then run `docker compose up -d --build` command again.
 
 That's it. Seriously.
 

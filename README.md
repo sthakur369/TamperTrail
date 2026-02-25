@@ -54,7 +54,7 @@ It's built for teams who care about trust, security, and ownership — without g
 ```bash
 # 1. Clone the repository
 git clone https://github.com/sthakur369/VeriLog.git
-cd verilog
+cd VeriLog
 
 # 2. Build and start all containers
 docker compose up -d --build
@@ -145,15 +145,20 @@ Drop this file into your project — it's the only dependency you need:
 # verilog_logger.py — drop into your project, import everywhere
 import os
 import httpx
-from typing import Optional
+from typing import Optional, Any
 
 VERILOG_URL = os.getenv("VERILOG_URL", "http://localhost/v1/log")
 VERILOG_API_KEY = os.getenv("VERILOG_API_KEY", "your-api-key-here")
 
-HEADERS = {
-    "X-API-Key": VERILOG_API_KEY,
-    "Content-Type": "application/json",
-}
+# 1. Create a GLOBAL client for connection pooling (Insanely fast)
+# This keeps connections alive instead of doing a handshake every time.
+http_client = httpx.AsyncClient(
+    timeout=2.0,  # Fail fast! Logging should not hang the host app.
+    headers={
+        "X-API-Key": VERILOG_API_KEY, 
+        "Content-Type": "application/json"
+    }
+)
 
 async def send_log(
     actor: str,                          # ✅ REQUIRED — who did it       (e.g. "user:alice@acme.com")
@@ -166,29 +171,40 @@ async def send_log(
     environment: Optional[str] = None,   # "production", "staging", "test"
     source_ip: Optional[str] = None,     # client IP address (auto-captured if omitted)
     request_id: Optional[str] = None,    # correlation ID — links related logs together
-    tags: Optional[dict] = None,         # searchable key-value pairs (visible in dashboard)
-    metadata: Optional[dict] = None,     # 🔒 ENCRYPTED at rest, NEVER shown in UI - (Ingest sensitive data in this field)
+    tags: Optional[dict[str, Any]] = None, # searchable key-value pairs (visible in dashboard)
+    metadata: Optional[dict[str, Any]] = None, # 🔒 ENCRYPTED at rest, NEVER shown in UI
 ) -> None:
     """Send a log entry to VeriLog. Fails silently — logging never crashes your app."""
 
-    # Build payload — only include fields that have values
-    payload = {"actor": actor, "action": action}
+    # 1. Start with the mandatory fields
+    payload = {
+        "actor": actor, 
+        "action": action
+    }
 
-    optional = {
+    # 2. Gather all optional fields
+    optional_fields = {
         "level": level, "message": message, "target_type": target_type,
         "target_id": target_id, "status": status, "environment": environment,
-        "source_ip": source_ip, "request_id": request_id,
+        "source_ip": source_ip, "request_id": request_id, 
         "tags": tags, "metadata": metadata,
     }
-    for key, value in optional.items():
+
+    # 3. Add optional fields to payload only if they are not None
+    for key, value in optional_fields.items():
         if value is not None:
             payload[key] = value
 
     try:
-        async with httpx.AsyncClient(timeout=5.0) as client:
-            await client.post(VERILOG_URL, json=payload, headers=HEADERS)
+        # Use the global connection-pooled client!
+        await http_client.post(VERILOG_URL, json=payload)
     except Exception:
-        pass  # logging should never crash your app
+        pass  # Logging must never crash the host application
+
+# 🔥 Pro-Tip for FastAPI users: 
+# Execute this in a Background Task so your API responds immediately!
+# background_tasks.add_task(send_log, actor="user_123", action="login")
+
 ```
 
 ---

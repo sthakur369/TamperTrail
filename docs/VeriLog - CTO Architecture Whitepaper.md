@@ -168,6 +168,8 @@ VeriLog's solution:
 
 **Result:** `POST /v1/log` response latency is bounded by WAL disk write time (1–3ms on SSD), not database latency. The system sustains thousands of ingestion requests per second on standard hardware before the database becomes a bottleneck.
 
+**Single-Worker Architecture (by design):** VeriLog runs as a single-worker async process (`--workers 1`). This is intentional, not a limitation. All concurrent request handling is managed by Python's `asyncio` event loop — a single worker handles thousands of concurrent connections because the hot path (WAL append + queue push) is non-blocking and completes in microseconds. Hash chain integrity is additionally enforced at the database level via PostgreSQL advisory locks (`pg_advisory_xact_lock`), meaning that even if multiple workers were introduced, the chain would remain consistent. However, a single worker eliminates all inter-process state contention, keeps memory usage predictable, and simplifies the WAL lifecycle. DevOps teams should not attempt to increase the worker count — it would increase memory usage without meaningful throughput improvement, as the bottleneck is disk I/O and database commit latency, not Python concurrency.
+
 ### 3.2 WAL Durability Guarantee
 
 | Event | Behavior |
@@ -175,6 +177,8 @@ VeriLog's solution:
 | `202 Accepted` returned | Entry is durable on disk in WAL file — guaranteed |
 | Server crash mid-batch | On restart, worker replays all WAL entries not confirmed in `.wal.pos` — zero data loss |
 | Sustained overload (queue growing faster than DB drain) | WAL enforces a maximum file size — new writes return `503` rather than silently failing or causing unbounded disk growth |
+
+**WAL Data Format — Transparency Note:** The WAL file (`queue.wal`) stores incoming log entries in plaintext JSON (JSONL format) on the `server_data` Docker volume. This is the standard and correct behavior — the WAL's purpose is crash recovery, and encrypting its contents would add latency to every write on the critical ingestion path without meaningful security benefit (the file is on the same server that holds the encryption key in memory). This is identical to how PostgreSQL's own WAL operates: data is written to the WAL in plaintext before being committed to encrypted tablespaces. The `metadata` field is encrypted by the background batch worker immediately before database insertion, not at WAL write time. For environments requiring encryption of all data at rest — including temporary buffers — ensure your Docker host volume is encrypted at the filesystem or block-device level (e.g., LUKS on Linux, BitLocker on Windows, or an encrypted EBS volume on AWS). This provides transparent encryption of the WAL file, the PostgreSQL data directory, and all other disk-resident data without any performance impact on the application layer.
 
 ### 3.3 Search Speed — PostgreSQL GIN Indexing
 

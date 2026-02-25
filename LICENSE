@@ -1,97 +1,55 @@
-PROPRIETARY SOFTWARE LICENSE
-NO AI TRAINING — NO PUBLIC DISTRIBUTION — ALL RIGHTS RESERVED
+VERILOG SOFTWARE LICENSE
+All Rights Reserved
 
 Copyright (c) 2026 Shubham Thakur.
 All rights reserved.
 
-IMPORTANT: This repository contains proprietary and confidential software.
-Access is granted only to individuals or entities explicitly authorized by
-Shubham Thakur. Unauthorized use is strictly prohibited.
+This repository contains deployment configuration, database schema,
+and documentation related to the VeriLog platform.
+
+The core VeriLog application is proprietary software and is not
+distributed as open-source.
 
 1. Ownership
 
-The software, source code, documentation, architecture, configurations,
-metadata, commit history, and all related materials contained in this
-repository (collectively, the "Software") are the exclusive property of
-Shubham Thakur.
+All intellectual property rights in the VeriLog software, including
+associated container images, binaries, branding, and documentation,
+are owned exclusively by Shubham Thakur.
 
-No ownership rights are transferred under this License. All rights not
-expressly granted are reserved.
+No ownership rights are transferred under this License.
 
-2. Limited License Grant
+2. Permitted Use
 
-Subject to strict compliance with this License, authorized users are granted
-a limited, non-exclusive, non-transferable, non-sublicensable license to use
-the Software solely for internal development, testing, and evaluation within
-a private environment.
+You may use the materials in this repository and the official
+VeriLog container images solely for lawful deployment and internal use.
 
-No other rights are granted.
+3. Restrictions
 
-3. Prohibited Uses
+You may not:
 
-Without prior written permission from Shubham Thakur, the following are
-strictly prohibited:
+(a) Redistribute, sublicense, or sell the VeriLog software or container images;
+(b) Remove or alter proprietary notices;
+(c) Use the VeriLog name or branding for derivative services without permission;
+(d) Reverse engineer the software except where permitted by applicable law.
+(e) Use any part of the software, binaries, or container images for AI/ML training, fine-tuning, or evaluation.
 
-(a) Copying, modifying, distributing, sublicensing, selling, leasing,
-    publishing, or making the Software publicly available.
+4. No Open-Source Grant
 
-(b) Uploading the Software, in whole or in part, to any public repository,
-    public container registry, public code hosting service, or public
-    file-sharing platform.
+This License does not grant rights to the underlying source code of
+the VeriLog application.
 
-(c) Reverse engineering, extracting, or attempting to derive trade secrets
-    from the Software.
+5. Disclaimer of Warranty
 
-(d) Using the Software in violation of any applicable law.
+THE SOFTWARE IS PROVIDED "AS IS" WITHOUT WARRANTY OF ANY KIND,
+EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE, AND NON-INFRINGEMENT.
 
-4. Prohibition on AI / Machine Learning Use
+6. Limitation of Liability
 
-The Software, including but not limited to source code, compiled code,
-documentation, commit history, metadata, logs, diffs, comments, test data,
-or any derived works, may NOT be used for:
+IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR ANY INDIRECT,
+INCIDENTAL, SPECIAL, OR CONSEQUENTIAL DAMAGES ARISING FROM
+THE USE OF THE SOFTWARE.
 
-• Training, pretraining, fine-tuning, evaluating, benchmarking, or improving
-  any machine learning or artificial intelligence models;
-• Inclusion in any dataset used for AI/ML systems;
-• Providing input, prompts, completions, embeddings, or signals to AI systems;
-• Any automated scraping, indexing, or data aggregation for AI purposes.
-
-The Software may not be provided to any third party, platform, service,
-or organization that uses data to train or improve AI/ML models.
-
-5. Confidentiality
-
-The Software shall be treated as confidential information. Authorized users
-must implement reasonable safeguards to prevent unauthorized access,
-disclosure, or distribution.
-
-6. Contributors and Third Parties
-
-Any individual contributing to or accessing the Software must be bound by
-a written agreement (such as a Contributor License Agreement or NDA)
-ensuring that all intellectual property rights remain with Shubham Thakur
-and that such parties comply with this License.
-
-7. Termination
-
-This License terminates automatically upon any violation of its terms.
-Upon termination, the user must immediately cease use of the Software
-and destroy all copies in their possession.
-
-8. Remedies
-
-Unauthorized use constitutes a material breach and may result in legal
-action. Shubham Thakur reserves the right to seek injunctive relief,
-damages, and any other remedies available under applicable law.
-
-9. Governing Law
+7. Governing Law
 
 This License shall be governed by the laws of India.
-Any disputes shall be subject to the exclusive jurisdiction of the courts
-located in [Your City], India.
-
-10. Disclaimer of Warranty
-
-The Software is provided "AS IS", without warranty of any kind,
-express or implied, including but not limited to merchantability,
-fitness for a particular purpose, and non-infringement.

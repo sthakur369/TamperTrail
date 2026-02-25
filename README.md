@@ -2,9 +2,9 @@
 
 # VeriLog
 
-### Enterprise-Grade Compliance & Audit Vault
+### Self-Hosted Logging & Audit Infrastructure
 
-**Self-hosted. Tamper-proof. Encrypted. Yours.**
+*No third parties. No data exposure. No SaaS control*
 
 [![Docker](https://img.shields.io/badge/Docker-Compose-2496ED?logo=docker&logoColor=white)](https://www.docker.com/)
 [![FastAPI](https://img.shields.io/badge/FastAPI-0.115-009688?logo=fastapi&logoColor=white)](https://fastapi.tiangolo.com/)
@@ -34,15 +34,14 @@
 
 ---
 
-# VeriLog — Enterprise Audit Vault (Client + Server + Docs)
+# Overview
+> Official Docker Compose deployment for the complete VeriLog stack — UI and backend included.
 
-**Free core product. Pro tier with additional features coming soon.**
-
-VeriLog is a developer-first, self-hosted event integrity system that makes your logs tamper-evident, encrypted, and cryptographically verifiable and built to keep your logs where they belong: under your control.
+VeriLog is a developer-first, self-hosted event integrity system that makes your logs tamper-evident, encrypted, and cryptographically verifiable — built to keep your logs where they belong: under your control.
 
 It's built for teams who care about trust, security, and ownership — without giving their logs to a SaaS vendor.
 
-> Official self-hosted deployment (Docker Compose) for the complete VeriLog stack — UI and backend included.
+***Free core. Pro tier with advanced capabilities coming soon!***
 
 ---
 
@@ -60,7 +59,7 @@ cd verilog
 # 2. Build and start all containers
 docker compose up -d --build
 ```
- > Note: By default, images are pulled from Docker Hub. If you prefer to use GitHub Container Registry (GHCR), edit the .env file in the project root: `IMAGE_REGISTRY=ghcr.io` and then run `docker compose up -d --build` command again.
+ > ***Note: By default, images are pulled from Docker Hub. If you prefer to use GitHub Container Registry (GHCR), edit the .env file in the project root: `IMAGE_REGISTRY=ghcr.io` and then run `docker compose up -d --build` command again.***
 
 That's it. Seriously.
 
@@ -80,8 +79,6 @@ Navigate to **`http://localhost`** in your browser. You will see the setup wizar
 ```
 
 Enter a password (8+ characters), click **Complete Setup**, and you're in. All routes are locked by a middleware guard until this step is complete — the system cannot be accessed without it.
-
-> **First boot** auto-seeds 25 realistic demo logs so the dashboard isn't empty when you arrive.
 
 ---
 

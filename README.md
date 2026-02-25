@@ -38,9 +38,11 @@
 
 **Free core product. Pro tier with additional features coming soon.**
 
-Developer-focused, self-hosted audit & compliance vault — tamper-evident, encrypted, and built to keep your logs where they belong: under your control. Ideal for developers, security teams, and compliance engineers who need cryptographic proof of events without SaaS lock-in.
+VeriLog is a developer-first, self-hosted event integrity system that makes your logs tamper-evident, encrypted, and cryptographically verifiable and built to keep your logs where they belong: under your control.
 
-> **Short:** Self-hosted UI (React + Nginx) for VeriLog — monitor audit logs, manage API keys, and verify cryptographic integrity. Works with the `verilog-server` backend.
+It's built for teams who care about trust, security, and ownership — without giving their logs to a SaaS vendor.
+
+> Official self-hosted deployment (Docker Compose) for the complete VeriLog stack — UI and backend included.
 
 ---
 

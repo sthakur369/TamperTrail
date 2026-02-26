@@ -34,7 +34,7 @@ services:
 
   # ── FastAPI Backend ─────────────────────────────────────────
   server:
-    image: ${IMAGE_REGISTRY:-docker.io}/sthakur369/verilog-server:${VERILOG_VERSION:-0.2.1}
+    image: ${IMAGE_REGISTRY:-ghcr.io}/sthakur369/verilog-server:${VERILOG_VERSION:-0.4.0}
     container_name: verilog-server
     restart: unless-stopped
     depends_on:
@@ -48,7 +48,7 @@ services:
 
   # ── React Frontend (Nginx) ─────────────────────────────────
   client:
-    image: ${IMAGE_REGISTRY:-docker.io}/sthakur369/verilog-client:${VERILOG_VERSION:-0.2.1}
+    image: ${IMAGE_REGISTRY:-ghcr.io}/sthakur369/verilog-client:${VERILOG_VERSION:-0.4.0}
     container_name: verilog-client
     restart: unless-stopped
     depends_on:

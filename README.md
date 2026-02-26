@@ -6,12 +6,17 @@
 
 _No third parties. No data exposure. No SaaS control._
 
+> **Note:** VeriLog is a **closed-source** product deployed via pre-built Docker containers.  
+> This repository serves as the official **Deployment Hub** containing the Docker Compose configuration, architecture documentation, and the public issue tracker.
+
+
+[![GitHub Repo Size](https://img.shields.io/github/repo-size/sthakur369/VeriLog?style=flat&color=blue)](https://github.com/sthakur369/VeriLog)
 [![Docker](https://img.shields.io/badge/Docker-Compose-2496ED?logo=docker&logoColor=white)](https://www.docker.com/)
 [![FastAPI](https://img.shields.io/badge/FastAPI-0.115-009688?logo=fastapi&logoColor=white)](https://fastapi.tiangolo.com/)
 [![React](https://img.shields.io/badge/React-19-61DAFB?logo=react&logoColor=black)](https://react.dev/)
 [![PostgreSQL](https://img.shields.io/badge/PostgreSQL-16-4169E1?logo=postgresql&logoColor=white)](https://www.postgresql.org/)
 [![Python](https://img.shields.io/badge/Python-3.12-3776AB?logo=python&logoColor=white)](https://www.python.org/)
-[![License: Proprietary](https://img.shields.io/badge/License-Proprietary--Software-blue)](LICENSE.md)
+[![License: Proprietary](https://img.shields.io/badge/License-Proprietary--Software-blue)](LICENSE)
 [![Feedback](https://img.shields.io/badge/💬_Feedback_%26_Bugs-tally.so-8b5cf6?style=flat)](https://tally.so/r/D4NvRl)
 
 </div>
@@ -30,18 +35,17 @@ _No third parties. No data exposure. No SaaS control._
 
 <br/>
 
-> 💬 **Got feedback or found a bug?** We'd love to hear from you! Drop your feedback, feature requests, or bug reports here — every little note helps us improve the vault 💛 — [open the feedback form →](https://tally.so/r/D4NvRl)
-
 ---
 
 # Overview
-> 💡 Official Docker Compose deployment for the complete VeriLog stack — UI and backend included.
 
 VeriLog is a developer-first, self-hosted event integrity system that makes your logs tamper-evident, encrypted, and cryptographically verifiable — built to keep your logs where they belong: under your control.
 
 It's built for teams who care about trust, security, and ownership — without giving their logs to a SaaS vendor.
 
-***Free core. Pro tier with advanced capabilities coming soon!***
+> 💡 ***Free core edition available. Pro tier (extended limits and advanced capabilities) in development!***
+
+> 💬 **Got feedback or found a bug?** We'd love to hear from you! Drop your feedback, feature requests, or bug reports here — every little note helps us improve the vault 💛 — [open the feedback form →](https://tally.so/r/D4NvRl)
 
 ---
 
@@ -56,10 +60,13 @@ It's built for teams who care about trust, security, and ownership — without g
 git clone https://github.com/sthakur369/VeriLog.git
 cd VeriLog
 
-# 2. Build and start all containers
+# 2. Create your own local .env from the template
+cp .env.example .env
+
+# 3. Build and start (Ensure Port 80 is available)
 docker compose up -d --build
 ```
- > ***💡 Note: By default, images are pulled from Docker Hub. If you prefer to use GitHub Container Registry (GHCR), edit the .env file in the project root: `IMAGE_REGISTRY=ghcr.io` and then run `docker compose up -d --build` command again.***
+ > ***💡 Note: By default, images are pulled from GitHub Container Registry (GHCR). If you prefer to use Docker Hub, edit the .env file in the project root: `IMAGE_REGISTRY=docker.io` and then run `docker compose up -d --build` command again.***
 
 That's it. Seriously.
 
@@ -82,11 +89,31 @@ Enter a password (8+ characters), click **Complete Setup**, and you're in. All r
 
 ---
 
+
+## Updating VeriLog
+
+To pull the latest security patches and features without losing data:
+
+```bash
+# 1. Download the latest VeriLog images from the repository
+docker compose pull
+
+# 2. Stop and remove the old containers and networks (Data is safe!)
+docker compose down
+
+# 3. Boot up the new containers using the fresh images
+docker compose up -d
+
+# 4. Delete the old, unused Docker images to free up disk space
+docker image prune -f
+```
+---
+
 ## Sending Your First Log
 
 ### Step 1: Get an API Key
 
-Dashboard → **API Keys** → **Create Key**. Copy the key (shown only once).
+Dashboard → **API Keys** → **Create Key**. Copy the key (shown only once) and set in your application or environment variables.
 
 ```bash
 export VERILOG_API_KEY="vl_a1b2c3d4e5f6..."
@@ -152,6 +179,9 @@ VERILOG_API_KEY = os.getenv("VERILOG_API_KEY", "your-api-key-here")
 
 # 1. Create a GLOBAL client for connection pooling (Insanely fast)
 # This keeps connections alive instead of doing a handshake every time.
+# ⚠️ On app shutdown, call: await http_client.aclose()
+# FastAPI example: register it in your lifespan shutdown handler.
+
 http_client = httpx.AsyncClient(
     timeout=2.0,  # Fail fast! Logging should not hang the host app.
     headers={
@@ -204,6 +234,13 @@ async def send_log(
 # 🔥 Pro-Tip for FastAPI users: 
 # Execute this in a Background Task so your API responds immediately!
 # background_tasks.add_task(send_log, actor="user_123", action="login")
+
+# ── Optional: Clean shutdown (recommended for production) ──────────
+# @asynccontextmanager
+# async def lifespan(app: FastAPI):
+#     yield
+#     await http_client.aclose()  # clean up connection pool on shutdown
+
 
 ```
 
@@ -454,6 +491,26 @@ Or override explicitly with `"level": "ERROR"` — this always takes priority.
 
 ---
 
+## 🔒 Production Deployment (HTTPS)
+
+The default setup runs on **port 80 (HTTP)** — safe for local development and internal networks only.
+
+> ⚠️ **Before exposing VeriLog to the internet, place it behind a TLS-terminating reverse proxy.**
+> Without HTTPS, API keys and session tokens travel in plaintext.
+```
+[ Internet ] → HTTPS → [ Your TLS Proxy ] → HTTP → [ VeriLog :80 ]
+```
+
+Any TLS-terminating proxy works — Cloudflare, Caddy, Nginx, Traefik, AWS ALB, or any load balancer. Point it at `http://your-server:80`.
+
+**Your responsibility:**
+- **Port conflict** — If your proxy runs on the same machine, change VeriLog's mapping from `"80:80"` → `"8080:80"` and point your proxy to port 8080.
+- **Real IP forwarding** — Pass `X-Forwarded-For` so VeriLog captures the actual client IP.
+- **Certificates** — VeriLog has no awareness of your certificates. Renewal and rotation are on you.
+
+> 📄 Full network topology and compliance mapping (SOC 2, HIPAA, GDPR) → [Security & Compliance Whitepaper](docs/VeriLog%20-%20Security%20%26%20Compliance%20Whitepaper.md).
+
+---
 
 ## Key Features
 
@@ -468,7 +525,7 @@ Your logs have two data layers:
 | `tags` | ✅ Visible in dashboard | ✅ GIN-indexed, searchable | Event context, filtering, display |
 | `metadata` | ❌ Never exposed in UI | ❌ Encrypted BYTEA blob | Sensitive forensic data |
 
-`metadata` is encrypted server-side with **Fernet AES-128-CBC** the moment it arrives. The raw payload never touches the database. Even with read-only database access, an attacker sees only binary ciphertext. Supports key rotation and optional envelope encryption via a `MASTER_KEY` for integration with AWS KMS or HashiCorp Vault.
+`metadata` is encrypted server-side with **AES-128-CBC + HMAC-SHA256 (Authenticated Encryption)** the moment it arrives. The raw payload never touches the database. Even with read-only database access, an attacker sees only binary ciphertext. Supports key rotation and optional envelope encryption via a `MASTER_KEY` for integration with AWS KMS or HashiCorp Vault.
 
 ### ⚡ Fire-and-Forget Ingestion
 `POST /v1/log` responds in **<10ms**. Logs are written to a crash-safe **Write-Ahead Log (WAL)** on disk before being micro-batched into PostgreSQL by a background worker. If the server restarts mid-batch, uncommitted entries are replayed automatically — zero data loss by design.
@@ -588,8 +645,51 @@ curl -H "Authorization: Bearer $TOKEN" \
 ```
 
 ---
+## 🛠 Maintenance & Disaster Recovery
+
+VeriLog is designed with data sovereignty in mind. Since your data is
+encrypted and self-hosted, you are responsible for managing your own
+backups.
+
+
+### 💾 Backing Up Data
+
+Create a full database snapshot:
+
+``` bash
+docker exec -i verilog-db pg_dump -U verilog verilog > backup.sql
+```
+
+---
+### 🔄 Disaster Recovery (Restore)
+
+To restore your data to a fresh instance or roll back a corrupted database, use the following sequence.
+
+⚠️ **Warning:** The first command (Drop Schema) will permanently delete
+any existing data in the current database to ensure a clean restore.
+Skip it if you are restoring to a completely empty instance.
+
+---
+
+#### Step 1: Clear the current schema
+
+``` bash
+docker exec -i verilog-db psql -U verilog -d verilog -c "DROP SCHEMA public CASCADE; CREATE SCHEMA public;"
+```
+
+---
+
+#### Step 2: Import the backup
+
+``` bash
+cat backup.sql | docker exec -i verilog-db psql -U verilog -d verilog
+```
+
+---
 
 ## License Tiers
+
+> 💡 ***Free core edition available. Pro tier (extended limits and advanced capabilities) in development!***
 
 VeriLog runs on a license key system. Without a license key, the Free tier applies.
 
@@ -625,19 +725,6 @@ VeriLog runs on a license key system. Without a license key, the Free tier appli
 </div>
 
 ---
-
-## Future Roadmap
-
-- **Forensic CLI Export Tool** — A command-line auditor tool for exporting, decrypting, and verifying the full audit chain offline, without requiring a running server
-- **SSO Integration** — SAML 2.0 and OIDC support for enterprise identity providers (Okta, Azure AD, Google Workspace)
-- **Internal System Audit Trails** — VeriLog logs its own operations (API key creation, user changes, login events) as system-tagged audit entries for self-auditing
-- **Compliance Export Reports** — Pre-formatted PDF/Excel reports for SOC 2, GDPR, and HIPAA auditors, with admin password re-confirmation and full audit logging of the export action
-- **Webhook Alerts** — Real-time alerts to Slack, PagerDuty, or any webhook URL when critical-severity events are detected
-- **Key Rotation UI** — Dashboard-driven Fernet key rotation with zero-downtime re-encryption of the metadata vault
-
----
-
-
 ## Security Model
 
 VeriLog is designed with defense-in-depth:
@@ -655,6 +742,21 @@ VeriLog is designed with defense-in-depth:
 For a full cryptographic breakdown, shared responsibility model, and infrastructure topology, see the **[Architecture Whitepaper](docs/VeriLog%20-%20CTO%20Architecture%20Whitepaper.md)**.
 
 ---
+
+
+## Future Roadmap
+
+- **Forensic CLI Export Tool** — A command-line auditor tool for exporting, decrypting, and verifying the full audit chain offline, without requiring a running server
+- **SSO Integration** — SAML 2.0 and OIDC support for enterprise identity providers (Okta, Azure AD, Google Workspace)
+- **Internal System Audit Trails** — VeriLog logs its own operations (API key creation, user changes, login events) as system-tagged audit entries for self-auditing
+- **Compliance Export Reports** — Pre-formatted PDF/Excel reports for SOC 2, GDPR, and HIPAA auditors, with admin password re-confirmation and full audit logging of the export action
+- **Webhook Alerts** — Real-time alerts to Slack, PagerDuty, or any webhook URL when critical-severity events are detected
+- **Key Rotation UI** — Dashboard-driven Fernet key rotation with zero-downtime re-encryption of the metadata vault
+- **Built-in HTTPS (Caddy Integration)** — Optional Caddy container with automatic Let's Encrypt certificates. Set `VERILOG_DOMAIN=logs.acme.com` and get HTTPS with zero configuration. Localhost dev flow completely unaffected.
+
+---
+
+
 
 ## Documentation
 
@@ -675,7 +777,7 @@ VeriLog is **Self-Hosted Proprietary Software**.
 * **Standard Features:** Free for individuals and small teams. Includes full access to the core vault, cryptographic chaining, and ingestion API.
 * **Pro Features:** Requires a valid license key to unlock higher limits for tenants, users, and extended retention policies.
 
-By downloading and using this software, you agree to the terms outlined in the [LICENSE.md](LICENSE.md) file. 
+By downloading and using this software, you agree to the terms outlined in the [LICENSE](LICENSE) file. 
 
 **Copyright © 2026 VeriLog. All rights reserved.**
 

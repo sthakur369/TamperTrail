@@ -26,6 +26,7 @@ yarn-debug.log*
 yarn-error.log*
 
 # ── Environment / Secrets ───────────────────────────────
+.env
 .env.*
 !.env.example
 *.pem
@@ -37,10 +38,10 @@ postgres_data/
 # ── Logs ────────────────────────────────────────────────
 *.log
 
-# ── License / Secrets (NEVER commit to public repos) ───
-generate_license.py
-license_private.pem
-*.pem
+# ── Test output (generated artifacts) ───────────────────
+stress_fuzz_output.txt
+stress_load_output.txt
+stress_test_report.txt
 
 # ── Database (local dev) ───────────────────────────────
 *.db
@@ -64,4 +65,3 @@ license_private.pem
 ehthumbs.db
 Thumbs.db
 desktop.ini
-node_modules

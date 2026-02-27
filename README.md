@@ -71,9 +71,10 @@ That's it. Seriously.
 
 Navigate to **`http://localhost`** in your browser. You will see the setup wizard.
 
+
 ```
 ┌─────────────────────────────────────────┐
-│          TamperTrail Setup Wizard           │
+│          TamperTrail Setup Wizard       │
 │                                         │
 │  Create your master admin password      │
 │  to unlock the dashboard.               │
@@ -91,9 +92,9 @@ Enter a password (8+ characters), click **Complete Setup**, and you're in. All r
 
 ## Updating TamperTrail
 
-To pull the latest security patches and features without losing data:
-
 > ⭐ **Stay up to date:** Watch this repository for new releases — click **Watch → Custom → Releases** in the top-right corner of this page to get notified when security patches and new features drop.
+
+To pull the latest security patches and features without losing data:
 
 ```bash
 # 1. Download the latest TamperTrail images from the repository
@@ -596,6 +597,7 @@ The default setup runs on **port 80 (HTTP)** — safe for local development and 
 
 > ⚠️ **Before exposing TamperTrail to the internet, place it behind a TLS-terminating reverse proxy.**
 > Without HTTPS, API keys and session tokens travel in plaintext.
+---
 ```
 [ Internet ] → HTTPS → [ Your TLS Proxy ] → HTTP → [ TamperTrail :80 ]
 ```
@@ -660,17 +662,17 @@ Isolate logs by project (tenant) with **two layers of enforcement**: application
 └───────────────────────┬─────────────────────────────────┘
                         │ Port 80 (only exposed port)
 ┌───────────────────────▼─────────────────────────────────┐
-│              TamperTrail-client (Nginx)                     │
+│              TamperTrail-client (Nginx)                 │
 │                                                         │
 │  • Serves React dashboard (SPA)                         │
 │  • Rate limiting per IP per endpoint                    │
 │  • Security headers (CSP, HSTS, X-Frame-Options)        │
-│  • Reverse proxies /v1/* → TamperTrail-server               │
+│  • Reverse proxies /v1/* → TamperTrail-server           │
 │  • FastAPI /docs blocked from public access             │
 └───────────────────────┬─────────────────────────────────┘
                         │ Internal Docker network (port 8000)
 ┌───────────────────────▼─────────────────────────────────┐
-│              TamperTrail-server (FastAPI)                   │
+│              TamperTrail-server (FastAPI)               │
 │                                                         │
 │  • Log ingestion with WAL crash recovery                │
 │  • SHA-256 hash chain computation                       │
@@ -683,7 +685,7 @@ Isolate logs by project (tenant) with **two layers of enforcement**: application
 └───────────────────────┬─────────────────────────────────┘
                         │ Internal Docker network (port 5432)
 ┌───────────────────────▼─────────────────────────────────┐
-│              TamperTrail-db (PostgreSQL 16)                 │
+│              TamperTrail-db (PostgreSQL 16)             │
 │                                                         │
 │  • audit_logs: monthly range-partitioned table          │
 │  • encrypted_metadata: BYTEA (Fernet ciphertext)        │
@@ -756,7 +758,7 @@ backups.
 Create a full database snapshot:
 
 ``` bash
-docker exec -i TamperTrail-db pg_dump -U TamperTrail TamperTrail > backup.sql
+docker exec -i tampertrail-db pg_dump -U tampertrail tampertrail > backup.sql
 ```
 
 ---
@@ -773,7 +775,7 @@ Skip it if you are restoring to a completely empty instance.
 #### Step 1: Clear the current schema
 
 ``` bash
-docker exec -i TamperTrail-db psql -U TamperTrail -d TamperTrail -c "DROP SCHEMA public CASCADE; CREATE SCHEMA public;"
+docker exec -i tampertrail-db psql -U tampertrail -d tampertrail -c "DROP SCHEMA public CASCADE; CREATE SCHEMA public;"
 ```
 
 ---
@@ -781,7 +783,7 @@ docker exec -i TamperTrail-db psql -U TamperTrail -d TamperTrail -c "DROP SCHEMA
 #### Step 2: Import the backup
 
 ``` bash
-cat backup.sql | docker exec -i TamperTrail-db psql -U TamperTrail -d TamperTrail
+cat backup.sql | docker exec -i tampertrail-db psql -U tampertrail -d tampertrail
 ```
 
 ---
@@ -901,6 +903,6 @@ By downloading and using this software, you agree to the terms outlined in the [
 
 <div align="center">
 
-**TamperTrail** — Because compliance isn't a SaaS subscription. It's your data.
+ > **TamperTrail** — Where Logs Become Evidence
 
 </div>

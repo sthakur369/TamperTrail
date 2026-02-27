@@ -2,7 +2,7 @@ services:
   # ── Init: generate unique secrets on first boot ─────────────
   init:
     image: alpine:3.19
-    container_name: verilog-init
+    container_name: tampertrail-init
     read_only: true
     volumes:
       - secrets:/secrets
@@ -13,43 +13,43 @@ services:
   # ── PostgreSQL 16 ───────────────────────────────────────────
   postgres:
     image: postgres:16-alpine
-    container_name: verilog-db
+    container_name: tampertrail-db
     restart: unless-stopped
     depends_on:
       init:
         condition: service_completed_successfully
     environment:
-      POSTGRES_DB: verilog
-      POSTGRES_USER: verilog
+      POSTGRES_DB: tampertrail
+      POSTGRES_USER: tampertrail
       POSTGRES_PASSWORD_FILE: /secrets/db_password
     volumes:
       - postgres_data:/var/lib/postgresql/data
       - secrets:/secrets:ro
       - ./postgres/init.sql:/docker-entrypoint-initdb.d/01-init.sql:ro
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U verilog"]
+      test: ["CMD-SHELL", "pg_isready -U tampertrail"]
       interval: 5s
       timeout: 5s
       retries: 5
 
   # ── FastAPI Backend ─────────────────────────────────────────
   server:
-    image: ${IMAGE_REGISTRY:-ghcr.io}/sthakur369/verilog-server:${VERILOG_VERSION:-0.4.0}
-    container_name: verilog-server
+    image: ${IMAGE_REGISTRY:-ghcr.io}/sthakur369/tampertrail-server:${TAMPERTRAIL_VERSION:-1.0.0}
+    container_name: tampertrail-server
     restart: unless-stopped
     depends_on:
       postgres:
         condition: service_healthy
     environment:
-      VERILOG_DB_PASSWORD_FILE: /secrets/db_password
+      TAMPERTRAIL_DB_PASSWORD_FILE: /secrets/db_password
     volumes:
       - server_data:/app/data
       - secrets:/secrets:ro
 
   # ── React Frontend (Nginx) ─────────────────────────────────
   client:
-    image: ${IMAGE_REGISTRY:-ghcr.io}/sthakur369/verilog-client:${VERILOG_VERSION:-0.4.0}
-    container_name: verilog-client
+    image: ${IMAGE_REGISTRY:-ghcr.io}/sthakur369/tampertrail-client:${TAMPERTRAIL_VERSION:-1.0.0}
+    container_name: tampertrail-client
     restart: unless-stopped
     depends_on:
       - server

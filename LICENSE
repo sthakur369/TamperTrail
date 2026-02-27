@@ -1,18 +1,18 @@
-VERILOG SOFTWARE LICENSE
+TAMPERTRAIL SOFTWARE LICENSE
 All Rights Reserved
 
 Copyright (c) 2026 Shubham Thakur.
 All rights reserved.
 
 This repository contains deployment configuration, database schema,
-and documentation related to the VeriLog platform.
+and documentation related to the TamperTrail platform.
 
-The core VeriLog application is proprietary software and is not
+The core TamperTrail application is proprietary software and is not
 distributed as open-source.
 
 1. Ownership
 
-All intellectual property rights in the VeriLog software, including
+All intellectual property rights in the TamperTrail software, including
 associated container images, binaries, branding, and documentation,
 are owned exclusively by Shubham Thakur.
 
@@ -21,22 +21,22 @@ No ownership rights are transferred under this License.
 2. Permitted Use
 
 You may use the materials in this repository and the official
-VeriLog container images solely for lawful deployment and internal use.
+TamperTrail container images solely for lawful deployment and internal use.
 
 3. Restrictions
 
 You may not:
 
-(a) Redistribute, sublicense, or sell the VeriLog software or container images;
+(a) Redistribute, sublicense, or sell the TamperTrail software or container images;
 (b) Remove or alter proprietary notices;
-(c) Use the VeriLog name or branding for derivative services without permission;
+(c) Use the TamperTrail name or branding for derivative services without permission;
 (d) Reverse engineer the software except where permitted by applicable law.
 (e) Use any part of the software, binaries, or container images for AI/ML training, fine-tuning, or evaluation.
 
 4. No Open-Source Grant
 
 This License does not grant rights to the underlying source code of
-the VeriLog application.
+the TamperTrail application.
 
 5. Disclaimer of Warranty
 

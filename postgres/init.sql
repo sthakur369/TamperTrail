@@ -1,4 +1,4 @@
--- VeriLog PostgreSQL initialization
+-- TamperTrail PostgreSQL initialization
 -- This script runs once when the container is first created.
 
 -- Enable required extensions

@@ -1,16 +1,15 @@
 <div align="center">
 
-# VeriLog
+# TamperTrail
 
-### Self-Hosted Logging & Audit Infrastructure
+### Where Logs Become Evidence
 
-_No third parties. No data exposure. No SaaS control._
+_The self-hosted, cryptographic vault for tamper-proof audit logs_
 
-> **Note:** VeriLog is a **closed-source** product deployed via pre-built Docker containers.  
-> This repository serves as the official **Deployment Hub** containing the Docker Compose configuration, architecture documentation, and the public issue tracker.
+> **Note:** TamperTrail is a **closed-source** product deployed via pre-built Docker containers.
+> This repository contains the Docker Compose configuration, architecture documentation, and the public issue tracker.
 
-
-[![GitHub Repo Size](https://img.shields.io/github/repo-size/sthakur369/VeriLog?style=flat&color=blue)](https://github.com/sthakur369/VeriLog)
+[![GitHub Repo Size](https://img.shields.io/github/repo-size/sthakur369/TamperTrail?style=flat&color=blue)](https://github.com/sthakur369/TamperTrail)
 [![Docker](https://img.shields.io/badge/Docker-Compose-2496ED?logo=docker&logoColor=white)](https://www.docker.com/)
 [![FastAPI](https://img.shields.io/badge/FastAPI-0.115-009688?logo=fastapi&logoColor=white)](https://fastapi.tiangolo.com/)
 [![React](https://img.shields.io/badge/React-19-61DAFB?logo=react&logoColor=black)](https://react.dev/)
@@ -26,11 +25,11 @@ _No third parties. No data exposure. No SaaS control._
 <div align="center">
   <img
     src="docs/screenshots/dashboard.png"
-    alt="VeriLog Dashboard — tamper-proof audit trail"
+    alt="TamperTrail Dashboard — tamper-proof audit trail"
     width="100%"
     style="border-radius: 12px; border: 1px solid #1e293b; box-shadow: 0 8px 32px rgba(0,0,0,0.5);"
   />
-  <sub><i>VeriLog dashboard — real-time audit logs with severity filtering, multi-tenant support & cryptographic integrity checks.</i></sub>
+  <sub><i>TamperTrail dashboard — real-time audit logs with severity filtering, multi-tenant support & cryptographic integrity checks.</i></sub>
 </div>
 
 <br/>
@@ -39,7 +38,7 @@ _No third parties. No data exposure. No SaaS control._
 
 # Overview
 
-VeriLog is a developer-first, self-hosted event integrity system that makes your logs tamper-evident, encrypted, and cryptographically verifiable — built to keep your logs where they belong: under your control.
+TamperTrail is a developer-first, self-hosted event integrity system that makes your logs tamper-evident, encrypted, and cryptographically verifiable — built to keep your logs where they belong: under your control.
 
 It's built for teams who care about trust, security, and ownership — without giving their logs to a SaaS vendor.
 
@@ -57,8 +56,8 @@ It's built for teams who care about trust, security, and ownership — without g
 
 ```bash
 # 1. Clone the repository
-git clone https://github.com/sthakur369/VeriLog.git
-cd VeriLog
+git clone https://github.com/sthakur369/TamperTrail.git
+cd TamperTrail
 
 # 2. Create your own local .env from the template
 cp .env.example .env
@@ -74,7 +73,7 @@ Navigate to **`http://localhost`** in your browser. You will see the setup wizar
 
 ```
 ┌─────────────────────────────────────────┐
-│          VeriLog Setup Wizard           │
+│          TamperTrail Setup Wizard           │
 │                                         │
 │  Create your master admin password      │
 │  to unlock the dashboard.               │
@@ -90,12 +89,14 @@ Enter a password (8+ characters), click **Complete Setup**, and you're in. All r
 ---
 
 
-## Updating VeriLog
+## Updating TamperTrail
 
 To pull the latest security patches and features without losing data:
 
+> ⭐ **Stay up to date:** Watch this repository for new releases — click **Watch → Custom → Releases** in the top-right corner of this page to get notified when security patches and new features drop.
+
 ```bash
-# 1. Download the latest VeriLog images from the repository
+# 1. Download the latest TamperTrail images from the repository
 docker compose pull
 
 # 2. Stop and remove the old containers and networks (Data is safe!)
@@ -116,21 +117,21 @@ docker image prune -f
 Dashboard → **API Keys** → **Create Key**. Copy the key (shown only once) and set in your application or environment variables.
 
 ```bash
-export VERILOG_API_KEY="vl_a1b2c3d4e5f6..."
-export VERILOG_URL="http://localhost"   # your VeriLog instance
+export TAMPERTRAIL_API_KEY="vl_a1b2c3d4e5f6..."
+export TAMPERTRAIL_URL="http://localhost"   # your TamperTrail instance
 ```
 
-> 💡 For full API details, see [API_REFERENCE.md](https://github.com/sthakur369/VeriLog/blob/main/docs/API_REFERENCE.md).
+> 💡 For full API details, see [API_REFERENCE.md](https://github.com/sthakur369/TamperTrail/blob/main/docs/API_REFERENCE.md).
 
 ---
 
 ### Step 2: Send a Log (cURL)
 
-One request that demonstrates **every field** VeriLog accepts:
+One request that demonstrates **every field** TamperTrail accepts:
 
 ```bash
-curl -X POST "$VERILOG_URL/v1/log" \
-  -H "X-API-Key: $VERILOG_API_KEY" \
+curl -X POST "$TAMPERTRAIL_URL/v1/log" \
+  -H "X-API-Key: $TAMPERTRAIL_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "actor":       "user:alice@acme.com",
@@ -166,81 +167,137 @@ curl -X POST "$VERILOG_URL/v1/log" \
 
 ### Step 3: Send Logs from Python
 
-Drop this file into your project — it's the only dependency you need:
+Drop this file into your project — it's the only dependency you need.
+
+Download (or copy) the file below, add it to your project directory, and import it wherever needed in your application.
+
+👉 **[TamperTrail_logger.py](tampertrail_logger.py)**
 
 ```python
-# verilog_logger.py — drop into your project, import everywhere
+# =============================================================================
+# tampertrail_logger.py
+# Drop into your project and import everywhere
+# =============================================================================
+
 import os
 import httpx
 from typing import Optional, Any
 
-VERILOG_URL = os.getenv("VERILOG_URL", "http://localhost/v1/log")
-VERILOG_API_KEY = os.getenv("VERILOG_API_KEY", "your-api-key-here")
 
-# 1. Create a GLOBAL client for connection pooling (Insanely fast)
-# This keeps connections alive instead of doing a handshake every time.
+# -----------------------------------------------------------------------------
+# Configuration
+# -----------------------------------------------------------------------------
+
+TAMPERTRAIL_URL = os.getenv("TAMPERTRAIL_URL", "http://localhost/v1/log")
+TAMPERTRAIL_API_KEY = os.getenv("TAMPERTRAIL_API_KEY", "<your-api-key-here>")
+
+# -----------------------------------------------------------------------------
+# Global HTTP Client (Connection Pooling)
+# -----------------------------------------------------------------------------
+# ⚡ Keeps connections alive (no TCP handshake per request)
 # ⚠️ On app shutdown, call: await http_client.aclose()
-# FastAPI example: register it in your lifespan shutdown handler.
+# FastAPI users: register inside lifespan shutdown handler
+# -----------------------------------------------------------------------------
 
 http_client = httpx.AsyncClient(
-    timeout=2.0,  # Fail fast! Logging should not hang the host app.
+    timeout=2.0,  # Fail fast — logging must never block your app
     headers={
-        "X-API-Key": VERILOG_API_KEY, 
-        "Content-Type": "application/json"
-    }
+        "X-API-Key": TAMPERTRAIL_API_KEY,
+        "Content-Type": "application/json",
+    },
 )
 
+
+# =============================================================================
+# Core Log Function
+# =============================================================================
+
 async def send_log(
-    actor: str,                          # ✅ REQUIRED — who did it       (e.g. "user:alice@acme.com")
-    action: str,                         # ✅ REQUIRED — what happened    (e.g. "order.created")
-    level: Optional[str] = None,         # severity: DEBUG, INFO, WARN, ERROR, CRITICAL
-    message: Optional[str] = None,       # human-readable event description
-    target_type: Optional[str] = None,   # resource type  (e.g. "order", "invoice")
-    target_id: Optional[str] = None,     # resource ID    (e.g. "ORD-1001")
-    status: Optional[str] = None,        # outcome: "success", "failed", "200", etc.
-    environment: Optional[str] = None,   # "production", "staging", "test"
-    source_ip: Optional[str] = None,     # client IP address (auto-captured if omitted)
-    request_id: Optional[str] = None,    # correlation ID — links related logs together
-    tags: Optional[dict[str, Any]] = None, # searchable key-value pairs (visible in dashboard)
-    metadata: Optional[dict[str, Any]] = None, # 🔒 ENCRYPTED at rest, NEVER shown in UI
+    actor: str,                           # ✅ REQUIRED → who did it (e.g. "user:alice@acme.com")
+    action: str,                          # ✅ REQUIRED → what happened (e.g. "order.created")
+    level: Optional[str] = None,          # DEBUG | INFO | WARN | ERROR | CRITICAL
+    message: Optional[str] = None,        # Human-readable description
+    target_type: Optional[str] = None,    # Resource type (e.g. "order")
+    target_id: Optional[str] = None,      # Resource ID   (e.g. "ORD-1001")
+    status: Optional[str] = None,         # Outcome: "success", "failed", "200"
+    environment: Optional[str] = None,    # "production" | "staging" | "test"
+    source_ip: Optional[str] = None,      # Client IP (auto-captured if omitted)
+    request_id: Optional[str] = None,     # Correlation ID
+    tags: Optional[dict[str, Any]] = None,       # Visible & searchable
+    metadata: Optional[dict[str, Any]] = None,   # 🔒 Encrypted at rest (never shown in UI)
 ) -> None:
-    """Send a log entry to VeriLog. Fails silently — logging never crashes your app."""
+    """
+    Send a log entry to TamperTrail.
 
-    # 1. Start with the mandatory fields
+    • Fails silently — logging never crashes your application
+    • Uses global connection-pooled client
+    """
+
+    # -------------------------------------------------------------------------
+    # 1️⃣ Required fields
+    # -------------------------------------------------------------------------
+
     payload = {
-        "actor": actor, 
-        "action": action
+        "actor": actor,
+        "action": action,
     }
 
-    # 2. Gather all optional fields
+    # -------------------------------------------------------------------------
+    # 2️⃣ Optional fields (added only if not None)
+    # -------------------------------------------------------------------------
+
     optional_fields = {
-        "level": level, "message": message, "target_type": target_type,
-        "target_id": target_id, "status": status, "environment": environment,
-        "source_ip": source_ip, "request_id": request_id, 
-        "tags": tags, "metadata": metadata,
+        "level": level,
+        "message": message,
+        "target_type": target_type,
+        "target_id": target_id,
+        "status": status,
+        "environment": environment,
+        "source_ip": source_ip,
+        "request_id": request_id,
+        "tags": tags,
+        "metadata": metadata,
     }
 
-    # 3. Add optional fields to payload only if they are not None
     for key, value in optional_fields.items():
         if value is not None:
             payload[key] = value
 
+    # -------------------------------------------------------------------------
+    # 3️⃣ Fire & forget (never crash host app)
+    # -------------------------------------------------------------------------
+
     try:
         # Use the global connection-pooled client!
-        await http_client.post(VERILOG_URL, json=payload)
+        await http_client.post(TAMPERTRAIL_URL, json=payload)
     except Exception:
-        pass  # Logging must never crash the host application
+        pass
 
-# 🔥 Pro-Tip for FastAPI users: 
-# Execute this in a Background Task so your API responds immediately!
-# background_tasks.add_task(send_log, actor="user_123", action="login")
 
-# ── Optional: Clean shutdown (recommended for production) ──────────
+# =============================================================================
+# Optional: Clean Shutdown (Recommended for Production)
+# =============================================================================
+#
+# from contextlib import asynccontextmanager
+#
 # @asynccontextmanager
 # async def lifespan(app: FastAPI):
 #     yield
-#     await http_client.aclose()  # clean up connection pool on shutdown
+#     await http_client.aclose()
+#
 
+
+# =============================================================================
+# 🔥 FastAPI Pro Tip
+# =============================================================================
+# Run send_log() inside a BackgroundTask so your API responds immediately:
+#
+# background_tasks.add_task(
+#     send_log,
+#     actor="user_123",
+#     action="login"
+# )
+# =============================================================================
 
 ```
 
@@ -255,13 +312,17 @@ Use `send_log()` in route handlers for important business events.
 
 ```python
 # YOUR route.py file
-from verilog_logger import send_log
+#################### 1️ Manual Business Event Log (Route-Level) ####################
+
+
+from tampertrail_logger import send_log
+from fastapi import BackgroundTasks
+
 
 @app.post("/place-order")
 def place_order(order: OrderCreate, request: Request, background_tasks: BackgroundTasks):
     db_order = create_order(db, order)
 
-    # background_tasks runs AFTER response is sent → zero latency impact on your API
     background_tasks.add_task(
         send_log,
         actor=f"user:{order.user_id}",
@@ -274,17 +335,19 @@ def place_order(order: OrderCreate, request: Request, background_tasks: Backgrou
         environment="production",
         source_ip=request.client.host,
         request_id=request.state.request_id,
-        tags={                                      # ← visible & searchable in dashboard
+        tags={                                  # ← visible & searchable in dashboard
             "price": str(order.price),
             "origin": order.user_location,
             "destination": order.destination,
         },
-        metadata={                                   # ← 🔒 encrypted, never shown in UI
+        metadata={                              # ← 🔒 encrypted, never shown in UI
             "user_id": order.user_id,
             "full_payload": order.model_dump(),
         },
     )
+
     return {"status": "created"}
+
 ```
 
 ---
@@ -296,44 +359,70 @@ Add middleware once → **every HTTP request is logged automatically**, zero cod
 The middleware below captures **30+ data points** from each request. You can trim it based on your requirements:
 
 ```python
-# YOUR middleware.py file
+# (YOUR middleware.py file)
+
+#################### 2️ Automatic Logging (Middleware-Level) ####################
+
 import time, uuid, asyncio, platform, os, inspect
 from starlette.middleware.base import BaseHTTPMiddleware
 from fastapi.responses import JSONResponse
-from verilog_logger import send_log
+from tampertrail_logger import send_log
+
 
 class LoggingMiddleware(BaseHTTPMiddleware):
+
     SKIP_PATHS = {"/health", "/favicon.ico"}
 
     async def dispatch(self, request, call_next):
-        request_id = str(uuid.uuid4())                     # → request_id
+
+        # ---------------------------------------------------------------------
+        # Request Setup
+        # ---------------------------------------------------------------------
+
+        request_id = str(uuid.uuid4())
         request.state.request_id = request_id
-        start = time.time()
+        start_time = time.time()
 
         # Execute request (catch crashes → error tag)
         error_detail = None
+
         try:
             response = await call_next(request)
-            status_code = response.status_code               # → status
+            status_code = response.status_code
         except Exception as e:
             status_code = 500
-            error_detail = f"{type(e).__name__}: {str(e)}"   # → error
-            response = JSONResponse(status_code=500, content={"detail": "Internal Server Error"})
+            error_detail = f"{type(e).__name__}: {str(e)}"
+            response = JSONResponse(
+                status_code=500,
+                content={"detail": "Internal Server Error"},
+            )
 
         if request.url.path in self.SKIP_PATHS:
             response.headers["X-Request-ID"] = request_id
             return response
 
-        # → actor (from X-User-ID header or fallback)
+        # ---------------------------------------------------------------------
+        # Actor Resolution
+        # ---------------------------------------------------------------------
+
         user_id = request.headers.get("X-User-ID")
         actor = f"user:{user_id}" if user_id else "service:my-api"
 
-        # → client_ip, client_port (from proxy headers or direct connection)
-        client_ip = (request.headers.get("X-Forwarded-For", "").split(",")[0].strip()
-                     or request.client.host)
+        # ---------------------------------------------------------------------
+        # Client Info
+        # ---------------------------------------------------------------------
 
-        # → handler_file, handler_function, handler_line (introspection)
+        client_ip = (
+            request.headers.get("X-Forwarded-For", "").split(",")[0].strip()
+            or request.client.host
+        )
+
+        # ---------------------------------------------------------------------
+        # Handler Introspection
+        # ---------------------------------------------------------------------
+
         handler_file = handler_function = handler_line = None
+
         try:
             endpoint = request.scope.get("endpoint")
             if endpoint:
@@ -344,10 +433,18 @@ class LoggingMiddleware(BaseHTTPMiddleware):
             pass
 
         route = request.scope.get("route")
-        latency_ms = round((time.time() - start) * 1000, 2)  # → latency_ms
-        level = "ERROR" if status_code >= 500 else ("WARN" if status_code >= 400 else "INFO")
 
-        # ── Build tags (all visible & searchable in dashboard) ─────
+        latency_ms = round((time.time() - start_time) * 1000, 2)
+
+        level = (
+            "ERROR" if status_code >= 500
+            else "WARN" if status_code >= 400
+            else "INFO"
+        )
+
+        # ---------------------------------------------------------------------
+        # Tags (Visible & Searchable)
+        # ---------------------------------------------------------------------
         tags = {
             "method":       request.method,                                         # → HTTP method
             "path":         request.url.path,                                       # → endpoint path
@@ -381,7 +478,9 @@ class LoggingMiddleware(BaseHTTPMiddleware):
         if getattr(route, "path", None):         tags["route_pattern"]       = route.path
         if error_detail:                         tags["error"]               = error_detail[:200]
 
-        # ── Fire log to VeriLog ──────────────────────────
+        # ---------------------------------------------------------------------
+        # Fire Log (Non-Blocking)
+        # ---------------------------------------------------------------------
         asyncio.create_task(send_log(
             actor=actor,
             action="http.request",
@@ -479,7 +578,7 @@ These are captured by the server and **do not need to be provided**:
 
 ## Severity Auto-Derivation
 
-If you don't provide a `level`, VeriLog derives severity from your `action` string:
+If you don't provide a `level`, TamperTrail derives severity from your `action` string:
 
 | Severity | Triggered by action keywords |
 |----------|------------------------------|
@@ -495,20 +594,20 @@ Or override explicitly with `"level": "ERROR"` — this always takes priority.
 
 The default setup runs on **port 80 (HTTP)** — safe for local development and internal networks only.
 
-> ⚠️ **Before exposing VeriLog to the internet, place it behind a TLS-terminating reverse proxy.**
+> ⚠️ **Before exposing TamperTrail to the internet, place it behind a TLS-terminating reverse proxy.**
 > Without HTTPS, API keys and session tokens travel in plaintext.
 ```
-[ Internet ] → HTTPS → [ Your TLS Proxy ] → HTTP → [ VeriLog :80 ]
+[ Internet ] → HTTPS → [ Your TLS Proxy ] → HTTP → [ TamperTrail :80 ]
 ```
 
 Any TLS-terminating proxy works — Cloudflare, Caddy, Nginx, Traefik, AWS ALB, or any load balancer. Point it at `http://your-server:80`.
 
 **Your responsibility:**
-- **Port conflict** — If your proxy runs on the same machine, change VeriLog's mapping from `"80:80"` → `"8080:80"` and point your proxy to port 8080.
-- **Real IP forwarding** — Pass `X-Forwarded-For` so VeriLog captures the actual client IP.
-- **Certificates** — VeriLog has no awareness of your certificates. Renewal and rotation are on you.
+- **Port conflict** — If your proxy runs on the same machine, change TamperTrail's mapping from `"80:80"` → `"8080:80"` and point your proxy to port 8080.
+- **Real IP forwarding** — Pass `X-Forwarded-For` so TamperTrail captures the actual client IP.
+- **Certificates** — TamperTrail has no awareness of your certificates. Renewal and rotation are on you.
 
-> 📄 Full network topology and compliance mapping (SOC 2, HIPAA, GDPR) → [Security & Compliance Whitepaper](docs/VeriLog%20-%20Security%20%26%20Compliance%20Whitepaper.md).
+> 📄 Full network topology and compliance mapping (SOC 2, HIPAA, GDPR) → [Security & Compliance Whitepaper](docs/TamperTrail%20-%20Security%20%26%20Compliance%20Whitepaper.md).
 
 ---
 
@@ -539,7 +638,7 @@ All traffic passes through a hardened Nginx reverse proxy. The FastAPI server is
 Security headers included out of the box: `X-Frame-Options`, `X-Content-Type-Options`, `Content-Security-Policy`, `HSTS`, and more.
 
 ### 🚀 True Zero-Config Deployment
-No `.env` files to edit. No secrets to generate manually. On first boot, VeriLog automatically:
+No `.env` files to edit. No secrets to generate manually. On first boot, TamperTrail automatically:
 - Generates a cryptographically random **database password** (32 chars, `/dev/urandom`)
 - Generates a **JWT secret** (128-char hex)
 - Generates a **Fernet encryption key** for the metadata vault
@@ -561,17 +660,17 @@ Isolate logs by project (tenant) with **two layers of enforcement**: application
 └───────────────────────┬─────────────────────────────────┘
                         │ Port 80 (only exposed port)
 ┌───────────────────────▼─────────────────────────────────┐
-│              verilog-client (Nginx)                     │
+│              TamperTrail-client (Nginx)                     │
 │                                                         │
 │  • Serves React dashboard (SPA)                         │
 │  • Rate limiting per IP per endpoint                    │
 │  • Security headers (CSP, HSTS, X-Frame-Options)        │
-│  • Reverse proxies /v1/* → verilog-server               │
+│  • Reverse proxies /v1/* → TamperTrail-server               │
 │  • FastAPI /docs blocked from public access             │
 └───────────────────────┬─────────────────────────────────┘
                         │ Internal Docker network (port 8000)
 ┌───────────────────────▼─────────────────────────────────┐
-│              verilog-server (FastAPI)                   │
+│              TamperTrail-server (FastAPI)                   │
 │                                                         │
 │  • Log ingestion with WAL crash recovery                │
 │  • SHA-256 hash chain computation                       │
@@ -584,7 +683,7 @@ Isolate logs by project (tenant) with **two layers of enforcement**: application
 └───────────────────────┬─────────────────────────────────┘
                         │ Internal Docker network (port 5432)
 ┌───────────────────────▼─────────────────────────────────┐
-│              verilog-db (PostgreSQL 16)                 │
+│              TamperTrail-db (PostgreSQL 16)                 │
 │                                                         │
 │  • audit_logs: monthly range-partitioned table          │
 │  • encrypted_metadata: BYTEA (Fernet ciphertext)        │
@@ -610,12 +709,12 @@ Isolate logs by project (tenant) with **two layers of enforcement**: application
 
 All endpoints are prefixed with `/v1`. Authentication uses either a **JWT cookie** (dashboard) or `X-API-Key` header (programmatic access).
 
- > 💡 For full API details, see [API_REFERENCE.md](https://github.com/sthakur369/VeriLog/blob/main/docs/API_REFERENCE.md)
+ > 💡 For full API details, see [API_REFERENCE.md](https://github.com/sthakur369/TamperTrail/blob/main/docs/API_REFERENCE.md)
 ---
 
 ## Chain Verification
 
-VeriLog's tamper detection works like a blockchain: each entry's hash includes the previous entry's hash. Modify or delete any entry, and the chain breaks.
+TamperTrail's tamper detection works like a blockchain: each entry's hash includes the previous entry's hash. Modify or delete any entry, and the chain breaks.
 
 ```bash
 # Quick verification — stops at first error
@@ -647,7 +746,7 @@ curl -H "Authorization: Bearer $TOKEN" \
 ---
 ## 🛠 Maintenance & Disaster Recovery
 
-VeriLog is designed with data sovereignty in mind. Since your data is
+TamperTrail is designed with data sovereignty in mind. Since your data is
 encrypted and self-hosted, you are responsible for managing your own
 backups.
 
@@ -657,7 +756,7 @@ backups.
 Create a full database snapshot:
 
 ``` bash
-docker exec -i verilog-db pg_dump -U verilog verilog > backup.sql
+docker exec -i TamperTrail-db pg_dump -U TamperTrail TamperTrail > backup.sql
 ```
 
 ---
@@ -674,7 +773,7 @@ Skip it if you are restoring to a completely empty instance.
 #### Step 1: Clear the current schema
 
 ``` bash
-docker exec -i verilog-db psql -U verilog -d verilog -c "DROP SCHEMA public CASCADE; CREATE SCHEMA public;"
+docker exec -i TamperTrail-db psql -U TamperTrail -d TamperTrail -c "DROP SCHEMA public CASCADE; CREATE SCHEMA public;"
 ```
 
 ---
@@ -682,7 +781,7 @@ docker exec -i verilog-db psql -U verilog -d verilog -c "DROP SCHEMA public CASC
 #### Step 2: Import the backup
 
 ``` bash
-cat backup.sql | docker exec -i verilog-db psql -U verilog -d verilog
+cat backup.sql | docker exec -i TamperTrail-db psql -U TamperTrail -d TamperTrail
 ```
 
 ---
@@ -691,16 +790,16 @@ cat backup.sql | docker exec -i verilog-db psql -U verilog -d verilog
 
 > 💡 ***Free core edition available. Pro tier (extended limits and advanced capabilities) in development!***
 
-VeriLog runs on a license key system. Without a license key, the Free tier applies.
+TamperTrail runs on a license key system. Without a license key, the Free tier applies.
 
-| Limit | Free | Pro |
+| Limit | Free | Pro (Coming Soon) |
 |-------|------|-----|
-| Dashboard users | 1 | Up to 10 |
-| Projects (tenants) | 1 | Up to 10 |
-| Environments per project | 2 | Up to 10 |
-| Log retention | 30 days | Up to 365 days / Forever |
-| Log ingestion | Unlimited | Unlimited |
-| API keys | Unlimited | Unlimited |
+| Dashboard users | 1 | TBD |
+| Projects (tenants) | 1 | TBD |
+| Environments per project | 2 | TBD |
+| Log retention | 30 days | Extended retention |
+| Log ingestion | Unlimited | TBD |
+| API keys | Unlimited | TBD |
 
 > Licenses are RS256-signed JWTs. Apply via **Admin → Settings → License Key** in the dashboard. Expiry is graceful — existing data is never deleted, only creation of new resources above free-tier limits is blocked.
 
@@ -710,24 +809,41 @@ VeriLog runs on a license key system. Without a license key, the Free tier appli
 ## Screenshots
 
 <div align="center">
-  <table>
-    <tr>
-      <td align="center" width="50%">
-        <img src="docs/screenshots/integrity-check.png" alt="Integrity Check — SHA-256 hash chain verification" width="100%" style="border-radius: 8px;" />
-        <sub><b>🔗 Integrity Check</b> — SHA-256 hash chain verification in real time</sub>
-      </td>
-      <td align="center" width="50%">
-        <img src="docs/screenshots/api-keys.png" alt="API Keys — create and manage ingestion keys" width="100%" style="border-radius: 8px;" />
-        <sub><b>🔑 API Keys</b> — create and revoke ingestion keys for your apps</sub>
-      </td>
-    </tr>
-  </table>
+
+<table>
+  <tr>
+    <td align="center" width="50%">
+      <img src="docs/screenshots/integrity-check.png" alt="Integrity Check — SHA-256 hash chain verification" width="100%" style="border-radius: 10px;" />
+      <br />
+      <sub><b>🔗 Integrity Check</b><br/>Real-time SHA-256 hash chain verification</sub>
+    </td>
+    <td align="center" width="50%">
+      <img src="docs/screenshots/api-keys.png" alt="API Keys — create and manage ingestion keys" width="100%" style="border-radius: 10px;" />
+      <br />
+      <sub><b>🔑 API Keys</b><br/>Create, manage, and revoke ingestion keys</sub>
+    </td>
+  </tr>
+
+  <tr>
+    <td align="center" width="50%">
+      <img src="docs/screenshots/projects.png" alt="Projects Page — create and manage projects" width="100%" style="border-radius: 10px;" />
+      <br />
+      <sub><b>📁 Projects</b><br/>Organize and manage your projects</sub>
+    </td>
+    <td align="center" width="50%">
+      <img src="docs/screenshots/teams.png" alt="Teams Page — create and manage teams" width="100%" style="border-radius: 10px;" />
+      <br />
+      <sub><b>👥 Teams</b><br/>Collaborate and manage team access</sub>
+    </td>
+  </tr>
+</table>
+
 </div>
 
 ---
 ## Security Model
 
-VeriLog is designed with defense-in-depth:
+TamperTrail is designed with defense-in-depth:
 
 1. **Network boundary** — Only port 80 (Nginx) is exposed. PostgreSQL and FastAPI ports are internal-only
 2. **Rate limiting** — Per-IP limits on every endpoint category via Nginx
@@ -739,7 +855,7 @@ VeriLog is designed with defense-in-depth:
 8. **Non-root containers** — Server runs as a dedicated `app` user (not root)
 9. **Security headers** — Full suite: CSP, HSTS, X-Frame-Options, X-Content-Type-Options, Referrer-Policy, Permissions-Policy
 
-For a full cryptographic breakdown, shared responsibility model, and infrastructure topology, see the **[Architecture Whitepaper](docs/VeriLog%20-%20CTO%20Architecture%20Whitepaper.md)**.
+For a full cryptographic breakdown, shared responsibility model, and infrastructure topology, see the **[Architecture Whitepaper](docs/TamperTrail%20-%20CTO%20Architecture%20Whitepaper.md)**.
 
 ---
 
@@ -748,11 +864,11 @@ For a full cryptographic breakdown, shared responsibility model, and infrastruct
 
 - **Forensic CLI Export Tool** — A command-line auditor tool for exporting, decrypting, and verifying the full audit chain offline, without requiring a running server
 - **SSO Integration** — SAML 2.0 and OIDC support for enterprise identity providers (Okta, Azure AD, Google Workspace)
-- **Internal System Audit Trails** — VeriLog logs its own operations (API key creation, user changes, login events) as system-tagged audit entries for self-auditing
+- **Internal System Audit Trails** — TamperTrail logs its own operations (API key creation, user changes, login events) as system-tagged audit entries for self-auditing
 - **Compliance Export Reports** — Pre-formatted PDF/Excel reports for SOC 2, GDPR, and HIPAA auditors, with admin password re-confirmation and full audit logging of the export action
 - **Webhook Alerts** — Real-time alerts to Slack, PagerDuty, or any webhook URL when critical-severity events are detected
 - **Key Rotation UI** — Dashboard-driven Fernet key rotation with zero-downtime re-encryption of the metadata vault
-- **Built-in HTTPS (Caddy Integration)** — Optional Caddy container with automatic Let's Encrypt certificates. Set `VERILOG_DOMAIN=logs.acme.com` and get HTTPS with zero configuration. Localhost dev flow completely unaffected.
+- **Built-in HTTPS (Caddy Integration)** — Optional Caddy container with automatic Let's Encrypt certificates. Set `TAMPERTRAIL_DOMAIN=logs.acme.com` and get HTTPS with zero configuration. Localhost dev flow completely unaffected.
 
 ---
 
@@ -762,29 +878,29 @@ For a full cryptographic breakdown, shared responsibility model, and infrastruct
 
 | Document | Description |
 |----------|-------------|
-| [Why VeriLog](docs/VeriLog%20-%20CEO%20Decision%20Brief.md) | ROI analysis, compliance acceleration, data sovereignty strategy, feature-to-benefit translation, and product roadmap |
-| [Architecture Whitepaper](docs/VeriLog%20-%20CTO%20Architecture%20Whitepaper.md) | Full technical architecture, cryptography deep dive, performance mechanics, and shared responsibility model |
-| [Security & Compliance](docs/VeriLog%20-%20Security%20%26%20Compliance%20Whitepaper.md) | Cryptographic architecture, compliance framework mapping (SOC 2, HIPAA, GDPR, ISO 27001, PCI DSS), and shared responsibility model |
-| [Data Governance](docs/VeriLog%20-%20Privacy%20%26%20Data%20Governance%20Whitepaper.md) | Privacy by Design architecture, data classification framework, GDPR/CCPA/HIPAA compliance mapping, and data subject rights |
+| [Why TamperTrail](docs/TamperTrail%20-%20CEO%20Decision%20Brief.md) | ROI analysis, compliance acceleration, data sovereignty strategy, feature-to-benefit translation, and product roadmap |
+| [Architecture Whitepaper](docs/TamperTrail%20-%20CTO%20Architecture%20Whitepaper.md) | Full technical architecture, cryptography deep dive, performance mechanics, and shared responsibility model |
+| [Security & Compliance](docs/TamperTrail%20-%20Security%20%26%20Compliance%20Whitepaper.md) | Cryptographic architecture, compliance framework mapping (SOC 2, HIPAA, GDPR, ISO 27001, PCI DSS), and shared responsibility model |
+| [Data Governance](docs/TamperTrail%20-%20Privacy%20%26%20Data%20Governance%20Whitepaper.md) | Privacy by Design architecture, data classification framework, GDPR/CCPA/HIPAA compliance mapping, and data subject rights |
 | [API Reference](docs/API_REFERENCE.md) | Complete API documentation — integration guide, data dictionary, code examples, and middleware implementation |
 
 ---
 
 ## ⚖️ License
 
-VeriLog is **Self-Hosted Proprietary Software**.
+TamperTrail is **Self-Hosted Proprietary Software**.
 
 * **Standard Features:** Free for individuals and small teams. Includes full access to the core vault, cryptographic chaining, and ingestion API.
 * **Pro Features:** Requires a valid license key to unlock higher limits for tenants, users, and extended retention policies.
 
 By downloading and using this software, you agree to the terms outlined in the [LICENSE](LICENSE) file. 
 
-**Copyright © 2026 VeriLog. All rights reserved.**
+**Copyright © 2026 TamperTrail. All rights reserved.**
 
 ---
 
 <div align="center">
 
-**VeriLog** — Because compliance isn't a SaaS subscription. It's your data.
+**TamperTrail** — Because compliance isn't a SaaS subscription. It's your data.
 
 </div>

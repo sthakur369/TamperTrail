@@ -1,4 +1,4 @@
-# VeriLog — API Reference
+# TamperTrail — API Reference
 
 **Base URL:** `http://your-host` (all traffic enters via Nginx on port 80)
 **API prefix:** Every endpoint starts with `/v1`
@@ -25,7 +25,7 @@
 
 ## 1. Authentication
 
-VeriLog uses **two separate authentication systems**. Never mix them up.
+TamperTrail uses **two separate authentication systems**. Never mix them up.
 
 ### API Key — For Sending Logs (this is what you need)
 
@@ -39,11 +39,11 @@ X-API-Key: vl_a1b2c3d4e5f6...
 
 Keys are stored Argon2-hashed. A lost key cannot be recovered — revoke it and create a new one.
 
-> **Never hardcode an API key.** Use an environment variable: `VERILOG_API_KEY=vl_...`
+> **Never hardcode an API key.** Use an environment variable: `TAMPERTRAIL_API_KEY=vl_...`
 
 ### JWT Session — For the Dashboard
 
-The browser dashboard handles this automatically via an `HTTPOnly` cookie (`verilog_token`) set at login. Tokens expire after 24 hours. One active session per user — logging in from a new location ends the previous session. You don't need to worry about this for log integration.
+The browser dashboard handles this automatically via an `HTTPOnly` cookie (`tampertrail_token`) set at login. Tokens expire after 24 hours. One active session per user — logging in from a new location ends the previous session. You don't need to worry about this for log integration.
 
 ---
 
@@ -55,19 +55,19 @@ The browser dashboard handles this automatically via an `HTTPOnly` cookie (`veri
 
 ### 2.1 Payload Schema
 
-Every log entry sent to VeriLog can contain up to 12 fields. Only 2 are required.
+Every log entry sent to TamperTrail can contain up to 12 fields. Only 2 are required.
 
 | Field | Required | Type | Constraint | Description |
 |-------|----------|------|-----------|-------------|
 | `actor` | **YES** | `string` | max 255 chars | Who performed the action. Use a consistent prefix format: `"user:alice@acme.com"`, `"service:billing-worker"`, `"cron:nightly-sync"` |
 | `action` | **YES** | `string` | max 255 chars | What happened. Use `"resource.verb"` convention: `"invoice.created"`, `"user.login.failed"`, `"file.deleted"` |
-| `level` | no | `string` | one of: `DEBUG`, `INFO`, `WARN`, `ERROR`, `CRITICAL` | Explicit severity. Case-insensitive. Overrides auto-detection. If omitted, VeriLog derives it from keywords in `action` (see [Severity Auto-Derivation](#23-severity-auto-derivation)). |
+| `level` | no | `string` | one of: `DEBUG`, `INFO`, `WARN`, `ERROR`, `CRITICAL` | Explicit severity. Case-insensitive. Overrides auto-detection. If omitted, TamperTrail derives it from keywords in `action` (see [Severity Auto-Derivation](#23-severity-auto-derivation)). |
 | `message` | no | `string` | max 1,000 chars | Human-readable description of the event. This is the first thing someone reads when investigating a log. |
 | `target_type` | no | `string` | max 255 chars | Type of resource affected. Appears in the "Target" column: `"order"`, `"invoice"`, `"user"`, `"document"` |
 | `target_id` | no | `string` | max 255 chars | Unique ID of that resource: `"ORD-1001"`, `"inv_9f2a3b4c"`, `"usr_alice_8821"` |
 | `status` | no | `string` | max 50 chars | Outcome. Accepts HTTP codes (`"200"`, `"404"`) or descriptive strings (`"success"`, `"failed"`, `"timeout"`). Default: `"200"` |
 | `environment` | no | `string` | max 100 chars | Deployment environment. Default: `"production"`. Options: `"production"`, `"staging"`, `"test"`, `"development"` |
-| `source_ip` | no | `string` | valid IPv4/IPv6 | End-user's IP address. If omitted, VeriLog uses the API caller's IP automatically (respects `X-Forwarded-For` from Nginx). |
+| `source_ip` | no | `string` | valid IPv4/IPv6 | End-user's IP address. If omitted, TamperTrail uses the API caller's IP automatically (respects `X-Forwarded-For` from Nginx). |
 | `request_id` | no | `string` | max 255 chars | Your trace/correlation ID. Also used as an **idempotency key** — duplicate `request_id` within 10 minutes is silently dropped. |
 | `tags` | no | `object` | any JSON object | **Searchable, plaintext** key-value pairs. GIN-indexed JSONB. Visible in the dashboard. Use for data you want to filter and display. |
 | `metadata` | no | `object` | any JSON object | **Encrypted** key-value payload. Fernet AES-128 encrypted on arrival. **Never** returned by the API. **Never** shown in the UI. Use for PII, credentials, stack traces. |
@@ -133,7 +133,7 @@ target_type: "api_key"      target_id: "vl_a1b2"
 
 ### 2.2 The `tags` vs. `metadata` Decision
 
-This is the most important design decision when integrating VeriLog.
+This is the most important design decision when integrating TamperTrail.
 
 | | `tags` | `metadata` |
 |--|--------|-----------|
@@ -173,7 +173,7 @@ This is the most important design decision when integrating VeriLog.
 
 ### 2.3 Severity Auto-Derivation
 
-If you don't provide a `level` field, VeriLog automatically derives severity by scanning your `action` string for keywords.
+If you don't provide a `level` field, TamperTrail automatically derives severity by scanning your `action` string for keywords.
 
 #### How `level` maps to dashboard severity:
 
@@ -187,7 +187,7 @@ If you don't provide a `level` field, VeriLog automatically derives severity by 
 
 #### When `level` is omitted — auto-detection kicks in:
 
-VeriLog scans the `action` string for these keywords:
+TamperTrail scans the `action` string for these keywords:
 
 | Auto-derived severity | Triggered when `action` contains any of... |
 |----------------------|---------------------------------------------|
@@ -233,7 +233,7 @@ These fields are captured by the server automatically. You do **not** need to pr
 }
 ```
 
-#### Full Request — Every field VeriLog accepts
+#### Full Request — Every field TamperTrail accepts
 
 ```json
 {
@@ -280,7 +280,7 @@ These fields are captured by the server automatically. You do **not** need to pr
 
 ### 2.6 Code Examples
 
-> For all examples: replace `$VERILOG_API_KEY` with your key and `localhost` with your host.
+> For all examples: replace `$TAMPERTRAIL_API_KEY` with your key and `localhost` with your host.
 
 ---
 
@@ -289,7 +289,7 @@ These fields are captured by the server automatically. You do **not** need to pr
 ```bash
 # A — Simple informational log
 curl -X POST http://localhost/v1/log \
-  -H "X-API-Key: $VERILOG_API_KEY" \
+  -H "X-API-Key: $TAMPERTRAIL_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "actor":   "user:alice@acme.com",
@@ -301,7 +301,7 @@ curl -X POST http://localhost/v1/log \
 
 # B — Error log (stack trace encrypted in metadata — never shown in dashboard)
 curl -X POST http://localhost/v1/log \
-  -H "X-API-Key: $VERILOG_API_KEY" \
+  -H "X-API-Key: $TAMPERTRAIL_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "actor":       "service:payment-worker",
@@ -325,7 +325,7 @@ curl -X POST http://localhost/v1/log \
 import httpx
 import traceback
 
-HEADERS = {"X-API-Key": VERILOG_API_KEY, "Content-Type": "application/json"}
+HEADERS = {"X-API-Key": TAMPERTRAIL_API_KEY, "Content-Type": "application/json"}
 URL = "http://localhost/v1/log"
 
 # A — Simple informational log
@@ -399,56 +399,139 @@ Using both gives you a complete picture: the middleware captures the HTTP layer 
 
 #### Step 1 — The Logger Utility
 
-Drop this file into your project. Both manual logs and the middleware use it.
+Drop this file into your project — it's the only dependency you need.
+
+Download (or copy) the file below, add it to your project directory, and import it wherever needed in your application.
+
+👉 **[TamperTrail_logger.py](tampertrail_logger.py)**
+
 
 ```python
-# verilog_logger.py — drop into your project, import everywhere
+# =============================================================================
+# TamperTrail_logger.py
+# Drop into your project and import everywhere
+# =============================================================================
+
 import os
 import httpx
-from typing import Optional
+from typing import Optional, Any
 
-VERILOG_URL = os.getenv("VERILOG_URL", "http://localhost/v1/log")
-VERILOG_API_KEY = os.getenv("VERILOG_API_KEY", "your-api-key-here")
 
-HEADERS = {
-    "X-API-Key": VERILOG_API_KEY,
-    "Content-Type": "application/json",
-}
+# -----------------------------------------------------------------------------
+# Configuration
+# -----------------------------------------------------------------------------
+
+TamperTrail_URL = os.getenv("TamperTrail_URL", "http://localhost/v1/log")
+TamperTrail_API_KEY = os.getenv("TamperTrail_API_KEY", "<your-api-key-here>")
+
+# -----------------------------------------------------------------------------
+# Global HTTP Client (Connection Pooling)
+# -----------------------------------------------------------------------------
+# ⚡ Keeps connections alive (no TCP handshake per request)
+# ⚠️ On app shutdown, call: await http_client.aclose()
+# FastAPI users: register inside lifespan shutdown handler
+# -----------------------------------------------------------------------------
+
+http_client = httpx.AsyncClient(
+    timeout=2.0,  # Fail fast — logging must never block your app
+    headers={
+        "X-API-Key": TamperTrail_API_KEY,
+        "Content-Type": "application/json",
+    },
+)
+
+
+# =============================================================================
+# Core Log Function
+# =============================================================================
 
 async def send_log(
-    actor: str,                          # ✅ REQUIRED — who did it       (e.g. "user:alice@acme.com")
-    action: str,                         # ✅ REQUIRED — what happened    (e.g. "order.created")
-    level: Optional[str] = None,         # severity: DEBUG, INFO, WARN, ERROR, CRITICAL
-    message: Optional[str] = None,       # human-readable event description
-    target_type: Optional[str] = None,   # resource type  (e.g. "order", "invoice")
-    target_id: Optional[str] = None,     # resource ID    (e.g. "ORD-1001")
-    status: Optional[str] = None,        # outcome: "success", "failed", "200", etc.
-    environment: Optional[str] = None,   # "production", "staging", "test"
-    source_ip: Optional[str] = None,     # client IP address (auto-captured if omitted)
-    request_id: Optional[str] = None,    # correlation ID — links related logs together
-    tags: Optional[dict] = None,         # searchable key-value pairs (visible in dashboard)
-    metadata: Optional[dict] = None,     # 🔒 ENCRYPTED at rest, NEVER shown in UI
+    actor: str,                           # ✅ REQUIRED → who did it (e.g. "user:alice@acme.com")
+    action: str,                          # ✅ REQUIRED → what happened (e.g. "order.created")
+    level: Optional[str] = None,          # DEBUG | INFO | WARN | ERROR | CRITICAL
+    message: Optional[str] = None,        # Human-readable description
+    target_type: Optional[str] = None,    # Resource type (e.g. "order")
+    target_id: Optional[str] = None,      # Resource ID   (e.g. "ORD-1001")
+    status: Optional[str] = None,         # Outcome: "success", "failed", "200"
+    environment: Optional[str] = None,    # "production" | "staging" | "test"
+    source_ip: Optional[str] = None,      # Client IP (auto-captured if omitted)
+    request_id: Optional[str] = None,     # Correlation ID
+    tags: Optional[dict[str, Any]] = None,       # Visible & searchable
+    metadata: Optional[dict[str, Any]] = None,   # 🔒 Encrypted at rest (never shown in UI)
 ) -> None:
-    """Send a log entry to VeriLog. Fails silently — logging never crashes your app."""
+    """
+    Send a log entry to TamperTrail.
 
-    # Build payload — only include fields that have values
-    payload = {"actor": actor, "action": action}
+    • Fails silently — logging never crashes your application
+    • Uses global connection-pooled client
+    """
 
-    optional = {
-        "level": level, "message": message, "target_type": target_type,
-        "target_id": target_id, "status": status, "environment": environment,
-        "source_ip": source_ip, "request_id": request_id,
-        "tags": tags, "metadata": metadata,
+    # -------------------------------------------------------------------------
+    # 1️⃣ Required fields
+    # -------------------------------------------------------------------------
+
+    payload = {
+        "actor": actor,
+        "action": action,
     }
-    for key, value in optional.items():
+
+    # -------------------------------------------------------------------------
+    # 2️⃣ Optional fields (added only if not None)
+    # -------------------------------------------------------------------------
+
+    optional_fields = {
+        "level": level,
+        "message": message,
+        "target_type": target_type,
+        "target_id": target_id,
+        "status": status,
+        "environment": environment,
+        "source_ip": source_ip,
+        "request_id": request_id,
+        "tags": tags,
+        "metadata": metadata,
+    }
+
+    for key, value in optional_fields.items():
         if value is not None:
             payload[key] = value
 
+    # -------------------------------------------------------------------------
+    # 3️⃣ Fire & forget (never crash host app)
+    # -------------------------------------------------------------------------
+
     try:
-        async with httpx.AsyncClient(timeout=5.0) as client:
-            await client.post(VERILOG_URL, json=payload, headers=HEADERS)
+        # Use the global connection-pooled client!
+        await http_client.post(TamperTrail_URL, json=payload)
     except Exception:
-        pass  # logging should never crash your app
+        pass
+
+
+# =============================================================================
+# Optional: Clean Shutdown (Recommended for Production)
+# =============================================================================
+#
+# from contextlib import asynccontextmanager
+#
+# @asynccontextmanager
+# async def lifespan(app: FastAPI):
+#     yield
+#     await http_client.aclose()
+#
+
+
+# =============================================================================
+# 🔥 FastAPI Pro Tip
+# =============================================================================
+# Run send_log() inside a BackgroundTask so your API responds immediately:
+#
+# background_tasks.add_task(
+#     send_log,
+#     actor="user_123",
+#     action="login"
+# )
+# =============================================================================
+
 ```
 
 ---
@@ -462,13 +545,17 @@ Use `send_log()` in your route handlers for important business events like order
 
 ```python
 # YOUR route.py file
-from verilog_logger import send_log
+#################### 1️ Manual Business Event Log (Route-Level) ####################
+
+
+from TamperTrail_logger import send_log
+from fastapi import BackgroundTasks
+
 
 @app.post("/place-order")
 def place_order(order: OrderCreate, request: Request, background_tasks: BackgroundTasks):
     db_order = create_order(db, order)
 
-    # background_tasks runs AFTER response is sent → zero latency impact on your API
     background_tasks.add_task(
         send_log,
         actor=f"user:{order.user_id}",
@@ -481,17 +568,19 @@ def place_order(order: OrderCreate, request: Request, background_tasks: Backgrou
         environment="production",
         source_ip=request.client.host,
         request_id=request.state.request_id,
-        tags={                                      # ← visible & searchable in dashboard
+        tags={                                  # ← visible & searchable in dashboard
             "price": str(order.price),
             "origin": order.user_location,
             "destination": order.destination,
         },
-        metadata={                                   # ← 🔒 encrypted, never shown in UI
+        metadata={                              # ← 🔒 encrypted, never shown in UI
             "user_id": order.user_id,
             "full_payload": order.model_dump(),
         },
     )
+
     return {"status": "created"}
+	
 ```
 
 ---
@@ -503,44 +592,70 @@ Add middleware once → **every HTTP request is logged automatically**, zero cod
 The middleware below captures **30+ data points** from each request. You can trim it based on your requirements:
 
 ```python
-# YOUR middleware.py file
+# (YOUR middleware.py file)
+
+#################### 2️ Automatic Logging (Middleware-Level) ####################
+
 import time, uuid, asyncio, platform, os, inspect
 from starlette.middleware.base import BaseHTTPMiddleware
 from fastapi.responses import JSONResponse
-from verilog_logger import send_log
+from TamperTrail_logger import send_log
+
 
 class LoggingMiddleware(BaseHTTPMiddleware):
+
     SKIP_PATHS = {"/health", "/favicon.ico"}
 
     async def dispatch(self, request, call_next):
-        request_id = str(uuid.uuid4())                     # → request_id
+
+        # ---------------------------------------------------------------------
+        # Request Setup
+        # ---------------------------------------------------------------------
+
+        request_id = str(uuid.uuid4())
         request.state.request_id = request_id
-        start = time.time()
+        start_time = time.time()
 
         # Execute request (catch crashes → error tag)
         error_detail = None
+
         try:
             response = await call_next(request)
-            status_code = response.status_code               # → status
+            status_code = response.status_code
         except Exception as e:
             status_code = 500
-            error_detail = f"{type(e).__name__}: {str(e)}"   # → error
-            response = JSONResponse(status_code=500, content={"detail": "Internal Server Error"})
+            error_detail = f"{type(e).__name__}: {str(e)}"
+            response = JSONResponse(
+                status_code=500,
+                content={"detail": "Internal Server Error"},
+            )
 
         if request.url.path in self.SKIP_PATHS:
             response.headers["X-Request-ID"] = request_id
             return response
 
-        # → actor (from X-User-ID header or fallback)
+        # ---------------------------------------------------------------------
+        # Actor Resolution
+        # ---------------------------------------------------------------------
+
         user_id = request.headers.get("X-User-ID")
         actor = f"user:{user_id}" if user_id else "service:my-api"
 
-        # → client_ip, client_port (from proxy headers or direct connection)
-        client_ip = (request.headers.get("X-Forwarded-For", "").split(",")[0].strip()
-                     or request.client.host)
+        # ---------------------------------------------------------------------
+        # Client Info
+        # ---------------------------------------------------------------------
 
-        # → handler_file, handler_function, handler_line (introspection)
+        client_ip = (
+            request.headers.get("X-Forwarded-For", "").split(",")[0].strip()
+            or request.client.host
+        )
+
+        # ---------------------------------------------------------------------
+        # Handler Introspection
+        # ---------------------------------------------------------------------
+
         handler_file = handler_function = handler_line = None
+
         try:
             endpoint = request.scope.get("endpoint")
             if endpoint:
@@ -551,10 +666,18 @@ class LoggingMiddleware(BaseHTTPMiddleware):
             pass
 
         route = request.scope.get("route")
-        latency_ms = round((time.time() - start) * 1000, 2)  # → latency_ms
-        level = "ERROR" if status_code >= 500 else ("WARN" if status_code >= 400 else "INFO")
 
-        # ── Build tags (all visible & searchable in dashboard) ─────
+        latency_ms = round((time.time() - start_time) * 1000, 2)
+
+        level = (
+            "ERROR" if status_code >= 500
+            else "WARN" if status_code >= 400
+            else "INFO"
+        )
+
+        # ---------------------------------------------------------------------
+        # Tags (Visible & Searchable)
+        # ---------------------------------------------------------------------
         tags = {
             "method":       request.method,                                         # → HTTP method
             "path":         request.url.path,                                       # → endpoint path
@@ -588,7 +711,9 @@ class LoggingMiddleware(BaseHTTPMiddleware):
         if getattr(route, "path", None):         tags["route_pattern"]       = route.path
         if error_detail:                         tags["error"]               = error_detail[:200]
 
-        # ── Fire log to VeriLog ──────────────────────────
+        # ---------------------------------------------------------------------
+        # Fire Log (Non-Blocking)
+        # ---------------------------------------------------------------------
         asyncio.create_task(send_log(
             actor=actor,
             action="http.request",
@@ -603,7 +728,8 @@ class LoggingMiddleware(BaseHTTPMiddleware):
         response.headers["X-Request-ID"] = request_id
         return response
 
-# Register in your main.py: app.add_middleware(LoggingMiddleware)
+# Register: app.add_middleware(LoggingMiddleware)
+
 ```
 
 ---
@@ -668,7 +794,7 @@ If the database is unreachable, `"db"` will be `"error"` and the status code wil
 
 ## 6. Dashboard & System APIs
 
-> These endpoints power the React dashboard. They require a **JWT session cookie** (`verilog_token`) obtained from `POST /v1/auth/login`. Do not call them from your application's integration code.
+> These endpoints power the React dashboard. They require a **JWT session cookie** (`tampertrail_token`) obtained from `POST /v1/auth/login`. Do not call them from your application's integration code.
 
 ---
 
@@ -689,7 +815,7 @@ If the database is unreachable, `"db"` will be `"error"` and the status code wil
 | `username` | YES | string | Case-insensitive. Default admin username is `admin`. |
 | `password` | YES | string | Min 8 chars (set during setup). |
 
-**Success:** `200 OK` — sets `verilog_token` cookie and returns `{"token": "...", "expires_in": 86400}`.
+**Success:** `200 OK` — sets `tampertrail_token` cookie and returns `{"token": "...", "expires_in": 86400}`.
 
 **Errors:** `401` wrong credentials, `403` account deactivated.
 
@@ -827,7 +953,7 @@ If the database is unreachable, `"db"` will be `"error"` and the status code wil
 
 **Auth:** JWT
 
-**Success:** `200 OK` → `{"environments": ["production", "staging", "test", "verilog_test"]}`
+**Success:** `200 OK` → `{"environments": ["production", "staging", "test", "tampertrail_test"]}`
 
 ---
 
@@ -937,7 +1063,7 @@ If tampering is found, `"status"` will be `"tampered"` and `"broken"` will be no
 | `from_date` | YES | datetime | ISO 8601 start date |
 | `to_date` | YES | datetime | ISO 8601 end date |
 
-**Success:** `200 OK` — streaming file download. `Content-Disposition: attachment; filename="verilog_export.csv"` (or `.jsonl`).
+**Success:** `200 OK` — streaming file download. `Content-Disposition: attachment; filename="tampertrail_export.csv"` (or `.jsonl`).
 
 ---
 
@@ -1134,7 +1260,7 @@ If tampering is found, `"status"` will be `"tampered"` and `"broken"` will be no
 
 #### `PUT /v1/admin/license`
 
-**Purpose:** Apply or update a VeriLog Pro license key.
+**Purpose:** Apply or update a TamperTrail Pro license key.
 
 **Auth:** JWT (admin only)
 
@@ -1142,7 +1268,7 @@ If tampering is found, `"status"` will be `"tampered"` and `"broken"` will be no
 
 | Field | Required | Notes |
 |-------|----------|-------|
-| `license_key` | YES | RS256-signed JWT license key provided by VeriLog. |
+| `license_key` | YES | RS256-signed JWT license key provided by TamperTrail. |
 
 **Success:** `200 OK` → `{"status": "ok", "plan": "Pro", "expires_at": "2026-01-01T00:00:00Z"}`
 

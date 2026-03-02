@@ -10,6 +10,7 @@ _The self-hosted, cryptographic vault for tamper-proof audit logs_
 
 > **Note:** TamperTrail is a **closed-source** product deployed via pre-built Docker containers.
 > This repository contains the Docker Compose configuration, architecture documentation, and the public issue tracker.
+
 [![GitHub Repo Size](https://img.shields.io/github/repo-size/sthakur369/TamperTrail?style=flat&color=blue)](https://github.com/sthakur369/TamperTrail)
 [![Docker](https://img.shields.io/badge/Docker-Compose-2496ED?logo=docker&logoColor=white)](https://www.docker.com/)
 [![FastAPI](https://img.shields.io/badge/FastAPI-0.115-009688?logo=fastapi&logoColor=white)](https://fastapi.tiangolo.com/)

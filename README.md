@@ -38,13 +38,18 @@ _The self-hosted, cryptographic vault for tamper-proof audit logs_
 
 # Overview
 
-TamperTrail is a developer-first, self-hosted event integrity system that makes your logs tamper-evident, encrypted, and cryptographically verifiable — built to keep your logs where they belong: under your control.
+You already log everything.
+But can you prove none of it was touched?
 
-It's built for teams who care about trust, security, and ownership — without giving their logs to a SaaS vendor.
+TamperTrail is a self-hosted, tamper-evident audit logging system. It uses SHA-256 hash chaining to make log modification or deletion instantly detectable.
+
+It runs alongside your app. Self-hosted — no SaaS lock-in, no data leaving your servers.
+
+Built for teams that know: if you scale, compliance will follow — SOC 2, HIPAA, DPDP Act, ISO 27001.
 
 > 💡 ***Free core edition available. Pro tier (extended limits and advanced capabilities) in development!***
 
-> 💬 **Got feedback or found a bug?** We'd love to hear from you! Drop your feedback, feature requests, or bug reports here — every little note helps us improve the vault 💛 — [open the feedback form →](https://tally.so/r/D4NvRl)
+> 💬 **Got feedback or found a bug?** We'd love to hear from you! Drop your feedback, feature requests, or bug reports here — every little note helps us improve the TamperTrail 💛 — [open the feedback form →](https://tally.so/r/D4NvRl)
 
 ---
 

@@ -71,7 +71,7 @@ cp .env.example .env
 # 3. Build and start (Ensure Port 80 is available)
 docker compose up -d --build
 ```
- > ***💡 Note: By default, images are pulled from GitHub Container Registry (GHCR). If you prefer to use Docker Hub, edit the .env file in the project root: `IMAGE_REGISTRY=docker.io` and then run `docker compose up -d --build` command again.***
+ > ***💡 Note: By default, images are pulled from GitHub Container Registry (GHCR). If you encounter any issues, or prefer to use Docker Hub, edit the .env file in the project root: `IMAGE_REGISTRY=docker.io` and then run `docker compose up -d --build` command again.***
 
 That's it. Seriously.
 

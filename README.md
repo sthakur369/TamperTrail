@@ -29,7 +29,7 @@ _The self-hosted, cryptographic vault for tamper-proof audit logs_
     width="100%"
     style="border-radius: 12px; border: 1px solid #1e293b; box-shadow: 0 8px 32px rgba(0,0,0,0.5);"
   />
-  <sub><i>TamperTrail dashboard — real-time audit logs with severity filtering, multi-tenant support & cryptographic integrity checks.</i></sub>
+  <sub><i>TamperTrail dashboard — real-time tamper-evident audit logs with SHA-256 hash chain integrity verification.</i></sub>
 </div>
 
 <br/>

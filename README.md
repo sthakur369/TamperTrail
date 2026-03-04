@@ -6,7 +6,10 @@
 
 _The self-hosted, cryptographic vault for tamper-proof audit logs_
 
-<br/>
+<p align="center">
+  <a href="https://tampertrail-app.vercel.app/"><strong>Visit Website →</strong></a>
+</p>
+
 
 > **Note:** TamperTrail is a **closed-source** product deployed via pre-built Docker containers.
 > This repository contains the Docker Compose configuration, architecture documentation, and the public issue tracker.
@@ -17,6 +20,7 @@ _The self-hosted, cryptographic vault for tamper-proof audit logs_
 [![React](https://img.shields.io/badge/React-19-61DAFB?logo=react&logoColor=black)](https://react.dev/)
 [![PostgreSQL](https://img.shields.io/badge/PostgreSQL-16-4169E1?logo=postgresql&logoColor=white)](https://www.postgresql.org/)
 [![Python](https://img.shields.io/badge/Python-3.12-3776AB?logo=python&logoColor=white)](https://www.python.org/)
+[![Website](https://img.shields.io/badge/🌐_Website-tampertrail.com-0f172a?style=flat)](https://tampertrail-app.vercel.app/)
 [![License: Proprietary](https://img.shields.io/badge/License-Proprietary--Software-blue)](LICENSE)
 [![Feedback](https://img.shields.io/badge/💬_Feedback_%26_Bugs-tally.so-8b5cf6?style=flat)](https://tally.so/r/D4NvRl)
 

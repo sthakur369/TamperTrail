@@ -1,8 +1,9 @@
 # TamperTrail — Business Value & Executive Strategy Brief
 
-**Document Type:** Executive Whitepaper  
+**Document Type:** Executive Whitepaper
+**Classification:** Public
 **Audience:** Chief Executive Officers, Founders, Business Owners, and Strategic Procurement Decision-Makers  
-**Version:** 1.0 — February 2026  
+**Version:** 1.0 — March 2026  
 **Keywords:** audit log compliance software, SOC 2 compliance tool, HIPAA audit trail, self-hosted audit logging, data sovereignty software, enterprise compliance accelerator, immutable audit log
 
 ---

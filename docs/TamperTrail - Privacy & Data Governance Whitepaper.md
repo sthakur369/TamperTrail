@@ -1,8 +1,9 @@
 # TamperTrail — Data Governance Manual
 
+**Document Type:** Executive Whitepaper
 **Classification:** Public  
 **Audience:** Chief Data Officers (CDOs), Data Protection Officers (DPOs), Privacy Counsel, and Enterprise Compliance Teams  
-**Version:** 1.0 — February 2026  
+**Version:** 1.0 — March 2026  
 **Keywords:** audit log data governance, GDPR audit trail, CCPA compliance logging, privacy by design, encrypted audit log, immutable audit trail, data lifecycle management, HIPAA audit logging
 
 ---

@@ -1,8 +1,12 @@
 # TamperTrail — CTO & Security Architecture Guide
 
+**Document Type:** Executive Whitepaper
+**Classification:** Public  
 **Audience:** Chief Technology Officers, Chief Security Officers, Principal Engineers, and Security Auditors.
-
+**Version:** 1.0 — March 2026
 **Purpose:** A transparent, technically rigorous description of TamperTrail's internal architecture, security model, cryptographic guarantees, performance engineering, and the shared responsibility framework governing the boundary between what TamperTrail protects and what the customer must protect.
+**Keywords:** audit log data governance, GDPR audit trail, CCPA compliance logging, privacy by design, encrypted audit log, immutable audit trail, data lifecycle management, HIPAA audit logging
+
 
 ---
 
